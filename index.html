@@ -81,6 +81,32 @@
     .btn{width:100%;min-height:46px}
     input,select{min-height:42px;font-size:16px} /* 16px prevents iOS zoom-on-focus */
   }
+  /* ===== unified responsive: phone shell ===== */
+  @media(max-width:820px){
+  body{font-size:15px}
+  header{position:sticky;top:0;z-index:98;padding:10px 12px}
+  header h1{font-size:16px}
+  header img{height:34px!important}
+  header .sub{display:none}
+  header .devcredit{position:static!important;font-size:11px!important;text-align:left!important}
+  header .devcredit b{font-size:12px!important}
+  nav{position:fixed;bottom:0;left:0;right:0;z-index:99;background:var(--ink);
+      display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px rgba(20,48,74,.35);scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{border-radius:10px;min-width:76px;min-height:52px;font-size:12px;line-height:1.2;padding:6px 8px}
+  nav button.active{background:var(--accent);color:#fff}
+  main{padding:10px 10px 96px 10px;max-width:100%}
+  .grid2,.grid3{grid-template-columns:1fr!important;gap:12px}
+  .card{padding:12px;border-radius:12px}
+  .card h2{font-size:13.5px}
+  table{font-size:11px}
+  .big{font-size:19px}
+  .btn{width:100%;min-height:48px;font-size:15px}
+  input,select{min-height:44px;font-size:16px}
+  .kpi{padding:9px}
+
+  }
   @media print{header,nav,footer,.noprint{display:none!important}.tab{display:block!important}body{background:#fff}}
 </style>
 </head>
@@ -89,7 +115,7 @@
   <div class="devcredit" style="position:absolute;top:12px;right:24px;text-align:right;font-size:15px;color:#EAF2F8;line-height:1.35">Developer: <b style="font-size:17px">Mohamed Raafat</b><br><span style="font-size:12px;color:#9FB8CC">Projects Department</span></div>
   <img src="data:image/jpeg;base64,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" alt="Arma Soap & Chemicals" style="height:52px;border-radius:6px;background:#fff;padding:4px 10px">
   <h1>Projects Dep. Selection Tool</h1>
-  <span class="sub">ARMA Soap &amp; Chemicals — Agitator · Mixer · Tank Package Design — Desktop edition · rev 3.3 · formulas encrypted · <a href="mobile.html" style="color:#7FD4A9">switch to mobile</a></span>
+  <span class="sub">ARMA Soap &amp; Chemicals — Agitator · Mixer · Tank Package Design — Desktop edition · rev 3.5 · unified responsive</span>
 </header>
 <nav>
   <button class="active" onclick="show(0,this)">1 · Process Inputs</button>
@@ -212,6 +238,8 @@ This tool needs JavaScript. If you see this message on your phone, the viewer yo
     <div class="card"><h2>Gearbox selection</h2><div id="gearres"></div>
       <div class="ref">Gearbox family rules per SEW-Eurodrive / Nord / Sumitomo catalog practice: inline helical for i ≤ 60, helical-bevel for right-angle or i ≤ 110, planetary above ≈ 20 kN·m output torque. Service factor per AGMA 6013 for agitator duty (24 h, moderate shock).</div></div>
   </div>
+  <div class="card"><h2>Drive assembly — shape, type & fixation on tank</h2><div class="drawwrap" id="drivesvg"></div></div>
+  <div class="card"><h2>Recommended vendors — motors & gearboxes</h2><div id="dvend"></div></div>
 </section>
 
 <!-- ============ TAB 4 : SHAFT ============ -->
@@ -221,6 +249,21 @@ This tool needs JavaScript. If you see this message on your phone, the viewer yo
       <div class="ref">Method: d³ = (16/π·τ<sub>all</sub>)·√[(K<sub>b</sub>M)² + (K<sub>t</sub>T)²]; hydraulic side load F<sub>h</sub> ≈ 19000·P<sub>kW</sub>/(N·D) per Fasano/Chemineer practice; lateral critical speed of cantilever with end mass, operating limit ≤ 0.65·N<sub>c</sub>. Axial thrust for helical ribbon per Bortnikov et al. (1973): P<sub>ax</sub> = K₂·μ·n·d<sub>m</sub>².</div></div>
     <div class="card"><h2>Mounting / fixation on tank</h2><div id="mountres"></div>
       <div class="ref">Mounting flange per DIN 28137-2 agitator nozzle series; beam mounting per vendor practice above 15 kW or shaft &gt; DN80 nozzle capability. Gusseted pads on head with load spreading ≥ 3× flange OD footprint.</div></div>
+  </div>
+  <div class="grid2">
+   <div class="card"><h2>Shaft design check report</h2><div id="shaftchk"></div>
+     <div class="ref">Condition 2 band per common vendor practice (and the 40–65% rule used in commercial agitator calculators): operate below 65% of first lateral critical speed; below 40% is simply extra-safe. Elastic-limit condition per ASME shaft design method.</div></div>
+   <div class="card"><h2>Stuffing box design calculator</h2>
+     <label>Internal design pressure <span class="unit">N/mm² (0.1 N/mm² = 1 bar)</span></label>
+     <input type="number" id="sbP" value="0.15" step="0.05" min="0.01">
+     <label>Permissible stress — stuffing box body <span class="unit">N/mm² (cast SS ≈ 80)</span></label>
+     <input type="number" id="sbSig" value="80" step="5">
+     <label>Number of gland studs</label>
+     <input type="number" id="sbN" value="4" step="1" min="2">
+     <label>Permissible stress — stud material <span class="unit">N/mm² (A2-70 ≈ 140)</span></label>
+     <input type="number" id="sbSigS" value="140" step="10">
+     <button class="btn" onclick="calcSB()">Calculate stuffing box →</button>
+     <div id="sbres"></div></div>
   </div>
 </section>
 
@@ -263,10 +306,11 @@ This tool needs JavaScript. If you see this message on your phone, the viewer yo
 <section class="tab" id="tab9">
 <div class="card" id="lockcard" style="border:2px solid var(--warn)">
   <h2>🔒 Formulas locked</h2>
-  <p style="font-size:13px;color:var(--ink2);margin-bottom:8px">The recipe templates contain ARMA proprietary formulations and are stored AES-256 encrypted. Enter the formulas password to unlock. The material property database below remains open.</p>
+  <p style="font-size:13px;color:var(--ink2);margin-bottom:8px">This entire module — recipe builder, formulation templates, material database and addition sequences — is ARMA proprietary and stored AES-256 encrypted. Enter the formulas password to unlock.</p>
   <label>Formulas password</label>
   <input type="password" id="fpw" autocomplete="off" onkeydown="if(event.key==='Enter')unlockRecipes()">
   <button class="btn" onclick="unlockRecipes()">Unlock formulas</button>
+  <div id="pwmsg" role="alert" style="color:var(--warn);font-weight:700;font-size:13px;margin-top:8px"></div>
 </div>
 <div id="recipewrap" style="display:none">
  <div class="card">
@@ -298,10 +342,9 @@ This tool needs JavaScript. If you see this message on your phone, the viewer yo
   <div id="hazroll"></div>
   <button class="btn" onclick="applyRecipe()">Apply mixture to design inputs →</button>
  </div>
-</div>
  <div class="card"><h2>Material database — physical properties & GHS classification</h2><div id="matdb"></div>
  <div class="ref">Properties are typical supplier values at 25 °C for the concentrations named; verify against your delivered SDS/CoA. GHS pictogram codes: GHS02 flammable · GHS03 oxidizer · GHS05 corrosive · GHS06 acute toxic · GHS07 irritant/harmful · GHS08 health hazard (CMR/sensitizer) · GHS09 aquatic.</div></div>
- <div id="seqwrap" style="display:none"><div class="card"><h2>Addition sequence & safety checks</h2><div id="seqres"></div></div></div>
+ <div class="card"><h2>Addition sequence & safety checks</h2><div id="seqres"></div></div></div>
 </section>
 
 <!-- ============ TAB 10 : IMPELLER LIBRARY ============ -->
@@ -371,12 +414,56 @@ let R={}; // results object
 const $=id=>document.getElementById(id);
 const f=(x,d=2)=>Number(x).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:0});
 function show(i,btn){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  document.querySelectorAll('nav button').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  btn.classList.add('active');btn.setAttribute('aria-selected','true');}
+/* responsive nav labels + ARIA */
+const NAV_SHORT=["⚙ Inputs","✓ Select","≈ Flow","⚡ Drive","▤ Shaft","▣ Drawing","✚ CIP","◉ Instr.","☰ BOQ","⚗ Recipe","✳ Blades","◎ Pumps"];
+let NAV_FULL=[];
+function applyNav(){
+  const btns=document.querySelectorAll('nav button');
+  if(!NAV_FULL.length) NAV_FULL=[...btns].map(b=>b.textContent);
+  const short=innerWidth<=820;
+  btns.forEach((b,i)=>{b.textContent=short?(NAV_SHORT[i]||NAV_FULL[i]):NAV_FULL[i];});
+}
+function a11yBoot(){
+  const nav=document.querySelector('nav'); if(nav)nav.setAttribute('role','tablist');
+  document.querySelectorAll('nav button').forEach((b,i)=>{b.setAttribute('role','tab');b.setAttribute('aria-selected',b.classList.contains('active'));b.id='navtab'+i;});
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.setAttribute('role','tabpanel');t.setAttribute('aria-labelledby','navtab'+i);});
+  // programmatic label association for every input/select
+  let n=0;
+  document.querySelectorAll('label').forEach(l=>{
+    let e=l.nextElementSibling;
+    if(e&&(e.tagName==='INPUT'||e.tagName==='SELECT')){ if(!e.id){e.id='fld'+(n++);} l.setAttribute('for',e.id); }
+  });
+  window.addEventListener('resize',applyNav); applyNav();
+}
 function nextDN(d_mm){for(const dn of DN){if(dn>=d_mm)return dn;}return 400;}
 function row(k,v,warn){return `<div class="res${warn?' warn':''}"><span>${k}</span><b>${v}</b></div>`;}
 
 /* ================= MAIN ================= */
+
+const FIELD_RULES=[["T",0.2,20,"Tank diameter (m)"],["H",0.2,30,"Tank height (m)"],["fill",10,100,"Fill level (%)"],
+ ["rho",300,3000,"Density (kg/m³)"],["mu",0.1,1e7,"Viscosity (cP)"],["tfill",1,5000,"Fill time (min)"],["tdrain",1,5000,"Drain time (min)"]];
+function validateInputs(){
+  const errs=[];
+  for(const [id,lo,hi,name] of FIELD_RULES){
+    const v=+($(id)?$(id).value:NaN);
+    if(!isFinite(v)||v<lo||v>hi) errs.push(name+" must be between "+lo+" and "+hi+" (got "+($(id)?$(id).value:"empty")+")");
+  }
+  let box=document.getElementById('errbox');
+  if(errs.length){
+    if(!box){box=document.createElement('div');box.id='errbox';
+      box.style.cssText="background:#FDEDE6;border:2px solid #C6410F;color:#7A2A0A;padding:12px 14px;margin-bottom:14px;border-radius:8px;font-size:13.5px;line-height:1.6";
+      document.querySelector('main').prepend(box);}
+    box.innerHTML="<b>Cannot run design — fix these inputs:</b><br>"+errs.join("<br>");
+    box.scrollIntoView({behavior:"smooth"});
+    return false;
+  }
+  if(box)box.remove();
+  return true;
+}
 function calcAll(){
+  if(!validateInputs())return;
   const T=+$('T').value, Hs=+$('H').value, fill=+$('fill').value/100,
         rho=+$('rho').value, mu=+$('mu').value/1000, goal=$('goal').value,
         duty=$('duty').value, bottom=$('bottom').value, hyg=$('hyg').value==='yes',
@@ -514,7 +601,7 @@ function calcAll(){
 /* ================= RENDER ================= */
 function renderAll(){
   drawPreview(); renderSel(); drawImp(); drawFlow(); renderDrive(); renderShaft(); drawFab(); renderCIP(); drawCIP(); renderInst(); renderBOQ();
-  renderMatDB(); renderLib();
+  renderMatDB(); renderLib(); drawDrive(); shaftReport(); calcSB();
   $('pQ').value=f((R.Qdrain||0.008)*3600,1); calcPump();
 }
 
@@ -533,7 +620,7 @@ function renderSel(){
     row("Reynolds number", f(R.Re,0)+"  → "+R.regime, R.regime==='Transitional')+
     row("Tip speed", f(R.tip,2)+" m/s")+
     row("Specific power P/V", f(R.P/R.V,0)+" W/m³")+
-    row("Estimated blend time", f(R.mixT,0)+" s")+
+    row("Estimated blend time (95% homogeneity)", f(R.mixT,0)+" s — N·θ correlation, single-phase; treat as a comparative index: plant batches with staged additions take far longer")+
     (R.laminarType?row("Axial thrust on shaft (Bortnikov)", f(R.PaxN,0)+" N"):"")+
     `<div style="margin-top:10px"><span class="badge">${R.imp.flow.toUpperCase()} FLOW</span>
       <span class="badge">${R.hyg?'HYGIENIC':'INDUSTRIAL'}</span></div>
@@ -548,7 +635,10 @@ function renderDrive(){
   $('motorres').innerHTML =
     row("Process power at shaft", f(R.Pkw,2)+" kW")+
     row("Margin (hydraulic 25% + drive losses)", "×"+f(1.25/(0.94*0.975),2))+
-    row("Selected motor rating", f(R.Pmot,2)+" kW", false)+
+    row("— seal/gland loss (lip seal ≈ 2.5%)", f(R.Pkw*0.026,2)+" kW ("+f(R.Pkw*0.026*1.341,2)+" hp)")+
+    row("— gearbox transmission loss (≈ 6%)", f(R.Pkw*0.064,2)+" kW ("+f(R.Pkw*0.064*1.341,2)+" hp)")+
+    row("Total requirement at motor", f(R.Pkw*1.25/(0.94*0.975),2)+" kW ("+f(R.Pkw*1.25/(0.94*0.975)*1.341,2)+" hp)")+
+    row("Selected motor rating", f(R.Pmot,2)+" kW ("+f(R.Pmot*1.341,1)+" hp)", false)+
     row("IEC frame size", R.frame+" — B5 flange, 4-pole")+
     row("Motor speed", R.Nmot+" rpm (50 Hz)")+
     row("Protection / efficiency", (R.press!=='atm'?"Ex db eb IIB T4 (verify area class), ":"")+"IE3, IP55, F-class")+
@@ -563,6 +653,38 @@ function renderDrive(){
     row("Required gearbox torque rating", "≥ "+f(R.TqDesign*R.fs,0)+" N·m")+
     row("Output shaft", "Solid, with drywell to protect against product vapors")+
     `<div class="note">Order gearbox with reinforced output bearings rated for combined overhung load ${f(R.Fh,0)} N and axial thrust ${f(Math.max(R.PaxN, R.rho*9.81*R.Z*Math.PI/4*(R.dStd/1000)**2),0)} N, or use a separate lantern/bearing pedestal.</div>`;
+}
+
+
+function drawDrive(){
+  const W=560,H=470,cx=280;
+  const bevel=/bevel/i.test(R.gtype), planet=/Planetary/i.test(R.gtype);
+  // gearbox shape by family
+  let gbox='';
+  if(planet) gbox=`<ellipse cx="${cx}" cy="150" rx="52" ry="14" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5"/><rect x="${cx-52}" y="150" width="104" height="52" fill="url(#steel)" stroke="#123B63" stroke-width="1.5"/><ellipse cx="${cx}" cy="202" rx="52" ry="14" fill="#AABCCB" stroke="#123B63"/><text x="${cx+62}" y="180" font-size="11" fill="#123B63">planetary — compact high-torque</text>`;
+  else if(bevel) gbox=`<rect x="${cx-34}" y="128" width="68" height="74" rx="6" fill="url(#steel)" stroke="#123B63" stroke-width="1.5" filter="url(#ds)"/><rect x="${cx+30}" y="140" width="66" height="44" rx="6" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5"/><rect x="${cx+96}" y="146" width="54" height="32" rx="4" fill="#C4D2DD" stroke="#123B63"/><text x="${cx+62}" y="128" font-size="11" fill="#123B63">helical-bevel — right-angle motor</text>`;
+  else gbox=`<rect x="${cx-36}" y="128" width="72" height="76" rx="6" fill="url(#steel)" stroke="#123B63" stroke-width="1.5" filter="url(#ds)"/>${[0,1,2].map(i=>`<line x1="${cx-30}" y1="${146+i*20}" x2="${cx+30}" y2="${146+i*20}" stroke="#8DA0B1"/>`).join('')}<text x="${cx+46}" y="168" font-size="11" fill="#123B63">${R.gstage} inline helical, vertical</text>`;
+  const motorY = bevel?110:36;
+  const motor = bevel
+    ? `<g transform="translate(${cx+150},${146}) rotate(90)"> </g><rect x="${cx+148}" y="132" width="86" height="58" rx="8" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5" filter="url(#ds)"/>${[0,1,2,3,4].map(i=>`<line x1="${cx+156+i*15}" y1="138" x2="${cx+156+i*15}" y2="184" stroke="#9FB0BF"/>`).join('')}<rect x="${cx+234}" y="148" width="12" height="26" fill="#7E97AC" stroke="#123B63"/><text x="${cx+148}" y="206" font-size="10.5" fill="#123B63">IEC ${R.frame} · ${R.Pmot} kW · B5</text>`
+    : `<rect x="${cx-32}" y="${motorY}" width="64" height="82" rx="8" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5" filter="url(#ds)"/>${[0,1,2,3,4,5].map(i=>`<line x1="${cx-26+i*10.5}" y1="${motorY+6}" x2="${cx-26+i*10.5}" y2="${motorY+70}" stroke="#9FB0BF"/>`).join('')}<rect x="${cx-14}" y="${motorY-14}" width="28" height="14" rx="4" fill="#7E97AC" stroke="#123B63"/><text x="${cx+42}" y="${motorY+34}" font-size="11" fill="#123B63">IEC ${R.frame} motor</text><text x="${cx+42}" y="${motorY+50}" font-size="10" fill="#3E5A75">${R.Pmot} kW · 4-pole · V1 flange</text>`;
+  const lantern=`<path d="M${cx-30},204 L${cx-40},246 L${cx+40},246 L${cx+30},204 Z" fill="#C4D2DD" stroke="#123B63" stroke-width="1.5"/><circle cx="${cx-20}" cy="226" r="6" fill="#F5F7F4" stroke="#123B63"/><circle cx="${cx+20}" cy="226" r="6" fill="#F5F7F4" stroke="#123B63"/><text x="${cx+48}" y="228" font-size="10.5" fill="#123B63">lantern / bearing pedestal + seal access</text>`;
+  const flange=`<rect x="${cx-58}" y="246" width="116" height="12" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5"/>${[-46,-23,0,23,46].map(x=>`<rect x="${cx+x-3}" y="246" width="6" height="12" fill="#41586E"/>`).join('')}<text x="${cx+66}" y="256" font-size="10.5" fill="#123B63">${R.flangeDN} · ${R.bolts}× M20 · DIN 28137-2</text>`;
+  const pad=`<rect x="${cx-92}" y="258" width="184" height="9" fill="url(#hatch)" stroke="#123B63"/><text x="${cx+100}" y="266" font-size="10" fill="#123B63">doubler pad + gussets</text>`;
+  const head=`<path d="M60,300 Q${cx},246 ${W-60},300" fill="none" stroke="#123B63" stroke-width="3"/><path d="M60,306 Q${cx},252 ${W-60},306" fill="none" stroke="#123B63" stroke-width="1.2"/><text x="70,310" y="322" font-size="10.5" fill="#3E5A75"><tspan x="70">tank top head — agitator at TANK CENTERLINE (0°), jacking pads at 90°/270°</tspan></text>
+   <line x1="${cx}" y1="258" x2="${cx}" y2="360" stroke="url(#shaftG)" stroke-width="7"/><line x1="${cx}" y1="80" x2="${cx}" y2="440" stroke="#8A2D0B" stroke-width="0.8" stroke-dasharray="14 5 3 5"/>
+   <text x="${cx+10}" y="352" font-size="10" fill="#123B63">Ø${R.dStd} shaft to impellers</text>`;
+  const beamNote=R.beam?`<text x="60" y="352" font-size="10.5" fill="#C6410F" font-weight="bold">Beam-mounted class (${R.Pmot} kW): 2× UPN140 bridge + 4 shell brackets — flange loads too high for head alone</text>`:``;
+  $('drivesvg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${DEFS}
+   <text x="24" y="26" font-size="12.5" font-weight="bold" fill="var(--ink)">${R.gtype}</text>
+   <text x="24" y="42" font-size="10.5" fill="var(--ink2)">i = ${f(R.ratio,1)} : 1 · output ${f(R.Nrpm,0)} rpm · ${f(R.TqDesign,0)} N·m design torque</text>
+   ${motor}${gbox}${lantern}${flange}${pad}${head}${beamNote}
+   ${dimV(cx-120,128,258,"drive stack",true)}</svg>`;
+  $('dvend').innerHTML=`<table><tr><th>Component</th><th>Recommended vendors / series</th><th>Note</th></tr>
+   <tr><td class="l">IEC motor</td><td class="l">Siemens SIMOTICS GP/SD · ABB M3BP · WEG W22 · VEM IE3</td><td class="l">Order V1 mounting, class F, PTC</td></tr>
+   <tr><td class="l">Gearbox</td><td class="l">SEW-Eurodrive ${bevel?'K':planet?'P':'R'} series · NORD · Bonfiglioli · Flender · Sumitomo</td><td class="l">Torque rating ≥ ${f(R.TqDesign*R.fs,0)} N·m, drywell, reinforced bearings</td></tr>
+   <tr><td class="l">Complete agitator drive package</td><td class="l">EKATO · SPX Flow Lightnin · Chemineer (NOV) · Zeppelin · Milton Roy Mixing</td><td class="l">Single-vendor option incl. shaft/seal/impellers</td></tr>
+   <tr><td class="l">VFD</td><td class="l">Siemens SINAMICS G120 · ABB ACS580 · Danfoss FC302</td><td class="l">Vector control, ${f(R.Pmot*1.1,1)} kW</td></tr></table>`;
 }
 
 function renderShaft(){
@@ -586,6 +708,43 @@ function renderShaft(){
     row("Sealing", R.press==='atm'?(R.hyg?"Hygienic lip seal cartridge":"Stuffing box, PTFE packing"):"Single/double mechanical seal, plan 52 quench for pressure duty")+
     row("Fixation points on tank", (R.beam?"4 shell brackets + 2 bridge beams; ":"")+"agitator flange at 0°, ± jacking pads at 90°/270°")+
     `<div class="note">Verify nozzle loads (M = ${f(R.M,0)} N·m, F = ${f(R.Fh+R.PaxN,0)} N) against vessel head per local code (EN 13445 / ASME VIII Div.1 App. hereof). For beam mounting, deflection at agitator centerline ≤ 0.5 mm.</div>`;
+}
+
+
+function shaftReport(){
+  const d=R.dStd/1000;
+  const tauC=16/(Math.PI*d**3)*Math.sqrt((1.7*R.M)**2+(1.3*R.TqDesign)**2)/1e6; // MPa combined
+  const tauA=R.mat.includes('Carbon')?58:R.mat.includes('304')?55:52;
+  const sigB=32*R.M/(Math.PI*d**3)/1e6, sigA=0.6*(R.mat.includes('Carbon')?250:205); // vs 0.6×yield
+  const ratio=R.Nrpm/R.Nc;
+  const ok1=tauC<=tauA, ok1b=sigB<=sigA, ok2=ratio<=0.65;
+  const chip=ok=>`<b style="color:${ok?'var(--accent)':'var(--warn)'}">${ok?'SAFE ✓':'RESIZE ✗'}</b>`;
+  $('shaftchk').innerHTML=`<table><tr><th>Condition</th><th>Calculated</th><th>Limit</th><th>Status</th></tr>
+   <tr><td class="l">1a. Combined shear (ASME, Kb=1.7 Kt=1.3)</td><td>${f(tauC,1)} MPa</td><td>≤ ${tauA} MPa</td><td>${chip(ok1)}</td></tr>
+   <tr><td class="l">1b. Bending vs elastic limit (0.6·σy)</td><td>${f(sigB,1)} MPa</td><td>≤ ${f(sigA,0)} MPa</td><td>${chip(ok1b)}</td></tr>
+   <tr><td class="l">2. Critical speed ratio N/N<sub>c</sub></td><td>${f(ratio*100,1)}% (N<sub>c</sub>=${f(R.Nc,0)} rpm)</td><td>≤ 65% (40–65% typical band)</td><td>${chip(ok2)}</td></tr>
+   <tr><td class="l">Selected shaft</td><td colspan="2">Ø ${R.dStd} mm, ${R.mat}, overhang ${f(R.L,2)} m</td><td>${chip(ok1&&ok1b&&ok2)}</td></tr></table>
+   <div class="note">Unlike manual calculators, this tool already iterated the diameter automatically until all conditions passed — the report documents the verification for your design file.</div>`;
+}
+function calcSB(){
+  if(!R.dStd)return;
+  const d=R.dStd, P=+($('sbP')?$('sbP').value:0.15), sig=+($('sbSig')?$('sbSig').value:80),
+        nS=+($('sbN')?$('sbN').value:4), sigS=+($('sbSigS')?$('sbSigS').value:140);
+  const bRaw=Math.sqrt(d), std=[8,10,12.5,16,20,25].find(x=>x>=bRaw)||25; // packing width mm
+  const a=d+2*std;                       // box inner dia over packing
+  const t=Math.max(P*a/(2*sig)+3, 6);    // wall thickness + corrosion/casting allowance
+  const OD=a+2*t;
+  const F=P*Math.PI/4*(a*a-d*d)*2.2;     // gland load incl. packing friction factor
+  const dc=Math.sqrt(4*F/(Math.PI*nS*sigS)), ds=Math.max(Math.ceil(dc/0.8),10);
+  const dstd=[10,12,16,20,24].find(x=>x>=ds)||24;
+  if($('sbres'))$('sbres').innerHTML=`<table><tr><th>Result</th><th>Value</th></tr>
+   <tr><td class="l">Packing size (square section)</td><td>${std} × ${std} mm, 4–5 rings PTFE/aramid</td></tr>
+   <tr><td class="l">Stuffing box ID</td><td>${f(a,0)} mm</td></tr>
+   <tr><td class="l">Wall thickness</td><td>${f(t,1)} mm</td></tr>
+   <tr><td class="l">Stuffing box OD</td><td>${f(OD,0)} mm</td></tr>
+   <tr><td class="l">Gland load</td><td>${f(F/1000,2)} kN</td></tr>
+   <tr><td class="l">Gland studs</td><td>${nS} × M${dstd} (${R.mat.includes('Carbon')?'8.8':'A2-70'})</td></tr></table>
+   <div class="note">Classical machine-design method (packing width b≈√d rounded to standard, thin-cylinder wall + allowance, stud core from gland load). For hygienic duty prefer the lip-seal/mechanical seal already selected — a stuffing box is the industrial alternative.</div>`;
 }
 
 function renderCIP(){
@@ -655,9 +814,15 @@ function renderBOQ(){
     b.map(r=>`<tr><td>${r[0]}</td><td class="l">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')+"</table>";
 }
 function exportCSV(){
-  const rows=[["Item","Description","Unit","Qty"],...R.boq.map(r=>[r[0],'"'+r[1].replace(/"/g,'""')+'"',r[2],r[3]])];
-  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
+  if(!R.boq||!R.boq.length){alert("Run a design first.");return;}
+  let csv="\uFEFFItem,Description,Unit,Qty\r\n";           // BOM so Excel reads UTF-8 (Ø, µ, ≤)
+  for(let i=0;i<R.boq.length;i++){
+    const r=R.boq[i];
+    csv+=String(r[0])+',"'+String(r[1]).replace(/"/g,'""')+'",'+r[2]+','+r[3]+"\r\n"; // every row incl. the last
+  }
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Agitator_BOQ.csv';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
 }
 
 /* ================= SVG GENERATORS — HQ ================= */
@@ -836,6 +1001,23 @@ function drawFlow(){
       imps+=`<g filter="url(#ds)"><path d="M${cx-D/2},${y} L${cx-8},${y-5} L${cx+8},${y+5} L${cx+D/2},${y}" fill="none" stroke="url(#blade)" stroke-width="9" stroke-linecap="round"/><circle cx="${cx}" cy="${y}" r="7" fill="url(#hubG)"/></g>`;}
     imps+=`<g stroke="#41586E" stroke-width="5" opacity="0.8"><line x1="${cx-w/2+7}" y1="${top+10}" x2="${cx-w/2+7}" y2="${bot-8}"/><line x1="${cx+w/2-7}" y1="${top+10}" x2="${cx+w/2-7}" y2="${bot-8}"/></g>`;
   }
+  // resting liquid (stagnant) zones — honest rendering per user review
+  let dead='';const bd2=botDepth(w,R.bottom);
+  if(!R.laminarType){
+    if(R.bottom==='cone'){
+      const y0=bot+bd2*0.22, wh=(w/2)*(1-0.22);
+      dead=`<path d="M${cx-wh},${y0} L${cx+wh},${y0} L${cx},${bot+bd2} Z" fill="url(#hatch)" stroke="#C6410F" stroke-width="1.6" stroke-dasharray="6 4" opacity="0.85"/>
+       <text x="${cx}" y="${y0+bd2*0.35}" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#C6410F">RESTING LIQUID</text>
+       <text x="${cx}" y="${y0+bd2*0.35+13}" text-anchor="middle" font-size="9" fill="#C6410F">cone apex — below impeller sweep</text>`;
+    }else if(R.bottom==='dished'&&R.C>0.2*R.T){
+      dead=`<ellipse cx="${cx}" cy="${bot+bd2*0.55}" rx="${w*0.22}" ry="${bd2*0.32}" fill="url(#hatch)" stroke="#C6410F" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.85"/>
+       <text x="${cx}" y="${bot+bd2*0.58}" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#C6410F">RESTING LIQUID</text>`;
+    }
+    if(R.D/R.T<0.42 && R.Re<2000){
+      dead+=[[-1],[1]].map(([m])=>`<path d="M${cx+m*(w/2-6)},${bot-4} L${cx+m*(w/2-6)},${bot-h*0.16} Q${cx+m*(w/2-w*0.13)},${bot-8} ${cx+m*(w/2-w*0.16)},${bot-4} Z" fill="url(#hatch)" stroke="#C6410F" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.8"/>`).join('')+
+       `<text x="${cx+w/2-10}" y="${bot-h*0.18}" text-anchor="end" font-size="9" fill="#C6410F">slow corner zone</text>`;
+    }
+  }
   const legend=`<g transform="translate(30,${top+8})"><text x="0" y="-8" font-size="10.5" fill="var(--ink2)">velocity</text>
    <linearGradient id="vleg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2B4C6F"/><stop offset="0.5" stop-color="#0E86D4"/><stop offset="1" stop-color="#7FD4A9"/></linearGradient>
    <rect width="12" height="120" fill="url(#vleg)" stroke="#41586E"/><text x="17" y="10" font-size="9.5" fill="var(--ink2)">high (tip ${f(R.tip,1)} m/s)</text><text x="17" y="118" font-size="9.5" fill="var(--ink2)">low</text></g>`;
@@ -845,10 +1027,10 @@ function drawFlow(){
    <g clip-path="url(#flclip)"><rect x="${cx-w/2}" y="${top+6}" width="${w}" height="${h+bd}" fill="url(#liq)" opacity="0.55"/></g>
    <path d="M${cx-w/2+4},${top+8} Q${cx},${top+(R.regime==='Turbulent'?22:10)} ${cx+w/2-4},${top+8}" fill="none" stroke="#2E6E9E" stroke-width="2"/>
    <line x1="${cx}" y1="${top-18}" x2="${cx}" y2="${R.laminarType?bot-10:impY}" stroke="url(#shaftG)" stroke-width="6"/>
-   ${imps}${loops}${legend}
+   ${imps}${loops}${legend}${dead}
    <text x="30" y="30" font-size="12.5" fill="var(--ink)" font-weight="bold">${R.imp.name}</text>
    <text x="30" y="45" font-size="11" fill="var(--ink2)">${f(R.Nrpm,0)} rpm · Re = ${f(R.Re,0)} (${R.regime}) · ${R.nImp}× Ø${f(R.D,2)} m</text></svg>`;
-  $('flownote').textContent=note;
+  $('flownote').textContent=note+(dead?' Red-hatched region = resting liquid the impeller does not reach. Remedies: reduce off-bottom clearance, add a lower cone-adapted impeller (like your CR3 spiral crutcher), fit a bottom anti-settling stub blade, or recirculate via the dispatch pump during batching.':'');
 }
 
 function drawFab(){
@@ -1008,7 +1190,9 @@ const RECIPES_ENC={"salt": "wC9x99ftJFw+48Nrv7pahA==", "iv": "aDJEp+4Fo4ru+W+D",
 let RECIPES=null;
 async function unlockRecipes(){
   const pw=document.getElementById('fpw').value;
-  if(!pw){alert("Enter the formulas password.");return;}
+  const msg=document.getElementById("pwmsg");
+  if(!pw){msg.textContent="Enter the formulas password.";return;}
+  msg.textContent="";
   try{
     const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
     const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
@@ -1017,8 +1201,8 @@ async function unlockRecipes(){
     RECIPES=JSON.parse(new TextDecoder().decode(pt));
     window._unlocked=true;
     document.getElementById('lockcard').style.display='none';
-    document.getElementById('recipewrap').style.display='block';document.getElementById('seqwrap').style.display='block';
-  }catch(e){alert("Wrong password — formulas remain locked.");}
+    document.getElementById('recipewrap').style.display='block';
+  }catch(e){document.getElementById("pwmsg").textContent="Wrong password — formulas remain locked. Try again.";document.getElementById("fpw").select();}
 }
 const IMPLIB=[ // name, lobes/angle, flow, Np, visc range, t400, t500, use
  ["Propeller 3-blade / 45°","3 / 45°","Axial",0.35,"< 2 Pa·s","12.5 s","7.5 s","General blending, low μ"],
@@ -1182,6 +1366,10 @@ function renderLib(){
 }
 /* ---- pumps ---- */
 function calcPump(){
+  const _q=+($('pQ')?$('pQ').value:0), _h=+($('pH')?$('pH').value:0);
+  if(!isFinite(_q)||_q<=0||!isFinite(_h)||_h<=0){
+    if($('pds'))$('pds').innerHTML='<div class="note safe">Enter a flow rate &gt; 0 m³/h and head &gt; 0 m, then press Select pump.</div>';
+    return;}
   const svc=$('psvc').value;
   let Q=+$('pQ').value, Hd=+$('pH').value;
   const mu=R.mu||0.05, rho=R.rho||1050, hyg=R.hyg, shear=$('pshear').value==='yes'||window._foaming&&svc==='dispatch'&&mu>2;
@@ -1290,8 +1478,18 @@ function drawPumpCharts(fam,Q,Hd,eff,mu){
    <text x="${mL}" y="18" font-size="12" fill="var(--ink)">Pump family efficiency vs viscosity</text></svg>`;
 }
 /* boot with defaults — fault-tolerant */
+/* session autosave */
+const SAVE_KEY="asc_tool_state_v1";
+function saveState(){try{
+  const s={};document.querySelectorAll('main input,main select').forEach(e=>{if(e.id&&e.type!=="password")s[e.id]=e.value;});
+  localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}}
+function restoreState(){try{
+  const s=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
+  for(const k in s){const e=document.getElementById(k);if(e)e.value=s[k];}
+}catch(e){}}
+function autosaveBoot(){document.querySelectorAll('main input,main select').forEach(e=>{e.addEventListener('change',saveState);e.addEventListener('input',saveState);});}
 function boot(){
-  try{ calcAll(); show(0,document.querySelectorAll('nav button')[0]); }
+  try{ a11yBoot(); restoreState(); autosaveBoot(); calcAll(); show(0,document.querySelectorAll('nav button')[0]); }
   catch(e){
     const d=document.createElement('div');
     d.style.cssText="background:#FDEDE6;border:2px solid #C6410F;color:#7A2A0A;padding:14px;margin:14px;border-radius:8px;font-size:14px";
