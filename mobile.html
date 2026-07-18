@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#14304A">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects Dep. Selection Tool — ARMA Soap & Chemicals</title>
+<style>
+  :root{
+    --ink:#14304A; --ink2:#3E5A75; --paper:#F5F7F4; --card:#FFFFFF;
+    --line:#C9D4DD; --accent:#0B6E4F; --accent2:#0E86D4; --warn:#C6410F;
+    --grid:#E4EAEF; --draw:#123B63; --dim:#8A2D0B; --mono:'Consolas','SF Mono','Menlo',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:24px 24px;}
+  header{background:var(--ink);color:#EAF2F8;padding:18px 28px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  header h1{font-size:22px;letter-spacing:.5px;font-weight:700}
+  header .sub{font-size:12px;color:#9FB8CC;font-family:var(--mono)}
+  nav{display:flex;gap:2px;background:var(--ink);padding:0 20px;flex-wrap:wrap}
+  nav button{background:#1E4266;color:#CFE0EE;border:none;padding:10px 16px;font-size:13px;cursor:pointer;
+    border-radius:6px 6px 0 0;font-weight:600}
+  nav button.active{background:var(--paper);color:var(--ink)}
+  main{padding:22px;max-width:1280px;margin:0 auto}
+  .tab{display:none}.tab.active{display:block}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:18px;
+    box-shadow:0 1px 3px rgba(20,48,74,.08)}
+  .card h2{font-size:15px;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:6px;margin-bottom:14px;
+    text-transform:uppercase;letter-spacing:1px}
+  .card h3{font-size:13px;color:var(--ink2);margin:12px 0 8px}
+  label{display:block;font-size:12px;color:var(--ink2);font-weight:600;margin:10px 0 4px}
+  input,select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:14px;
+    font-family:var(--mono);background:#FBFDFC;color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--accent2);border-color:var(--accent2)}
+  .unit{font-size:11px;color:#7C93A6;font-weight:400}
+  .btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:8px;font-size:14px;
+    font-weight:700;cursor:pointer;margin-top:14px}
+  .btn:hover{background:#095C42}
+  .btn.sec{background:var(--accent2)} .btn.sec:hover{background:#0B6FB0}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th{background:var(--ink);color:#EAF2F8;padding:8px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  td{padding:7px 8px;border-bottom:1px solid var(--line);font-family:var(--mono)}
+  td.l{font-family:inherit}
+  tr:nth-child(even) td{background:#F4F8FA}
+  .res{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:13px}
+  .res b{font-family:var(--mono);color:var(--accent);font-size:14px}
+  .res.warn b{color:var(--warn)}
+  .badge{display:inline-block;background:#E5F3EC;color:var(--accent);border:1px solid var(--accent);
+    border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;margin:2px}
+  .note{background:#FFF6E8;border-left:4px solid #E09F3E;padding:10px 12px;font-size:12px;margin-top:10px;border-radius:0 6px 6px 0;line-height:1.5}
+  .safe{background:#FDEDE6;border-left:4px solid var(--warn)}
+  .ref{font-size:11px;color:#7C93A6;font-style:italic;margin-top:8px;line-height:1.5}
+  svg text{font-family:var(--mono)}
+  .drawwrap{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:auto}
+  .big{font-size:26px;font-family:var(--mono);color:var(--accent);font-weight:700}
+  .kpi{background:#F0F6F3;border:1px solid #BFDCCB;border-radius:8px;padding:12px;text-align:center}
+  .kpi .lab{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:1px}
+  footer{padding:14px 28px;font-size:11px;color:#7C93A6;text-align:center}
+  svg{width:100%;height:auto;display:block}
+  .card{overflow-x:auto}
+  @media(max-width:720px){
+    header{padding:12px 14px;gap:10px}
+    header h1{font-size:17px}
+    header img{height:38px!important}
+    header .devcredit{position:static!important;text-align:left!important;width:100%;font-size:12px!important}
+    header .devcredit b{font-size:13px!important}
+    nav{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    nav::-webkit-scrollbar{display:none}
+    nav button{white-space:nowrap;padding:12px 14px;font-size:12.5px;min-height:44px}
+    main{padding:10px}
+    .card{padding:12px}
+    table{font-size:11.5px}
+    th,td{padding:5px 6px}
+    .big{font-size:20px}
+    .btn{width:100%;min-height:46px}
+    input,select{min-height:42px;font-size:16px} /* 16px prevents iOS zoom-on-focus */
+  }
+  
+  /* ===== MOBILE EDITION SHELL ===== */
+  body{font-size:15px}
+  header{position:sticky;top:0;z-index:98;padding:10px 12px}
+  header h1{font-size:16px}
+  header img{height:34px!important}
+  header .sub{display:none}
+  header .devcredit{position:static!important;font-size:11px!important;text-align:left!important}
+  header .devcredit b{font-size:12px!important}
+  nav{position:fixed;bottom:0;left:0;right:0;z-index:99;background:var(--ink);
+      display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px rgba(20,48,74,.35);scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{border-radius:10px;min-width:76px;min-height:52px;font-size:12px;line-height:1.2;padding:6px 8px}
+  nav button.active{background:var(--accent);color:#fff}
+  main{padding:10px 10px 96px 10px;max-width:100%}
+  .grid2,.grid3{grid-template-columns:1fr!important;gap:12px}
+  .card{padding:12px;border-radius:12px}
+  .card h2{font-size:13.5px}
+  table{font-size:11px}
+  .big{font-size:19px}
+  .btn{width:100%;min-height:48px;font-size:15px}
+  input,select{min-height:44px;font-size:16px}
+  .kpi{padding:9px}
+
+  @media print{header,nav,footer,.noprint{display:none!important}.tab{display:block!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<header style="position:relative">
+  <div class="devcredit" style="position:absolute;top:12px;right:24px;text-align:right;font-size:15px;color:#EAF2F8;line-height:1.35">Developer: <b style="font-size:17px">Mohamed Raafat</b><br><span style="font-size:12px;color:#9FB8CC">Projects Department</span></div>
+  <img src="data:image/jpeg;base64,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" alt="Arma Soap & Chemicals" style="height:52px;border-radius:6px;background:#fff;padding:4px 10px">
+  <h1>Projects Dep. Selection Tool</h1>
+  <span class="sub">ARMA Soap &amp; Chemicals — Agitator · Mixer · Tank Package Design — Mobile edition · rev 3.2 · <a href="index.html" style="color:#7FD4A9">switch to desktop</a></span>
+</header>
+<nav>
+  <button class="active" onclick="show(0,this)">⚙ Inputs</button>
+  <button onclick="show(1,this)">✓ Select</button>
+  <button onclick="show(2,this)">≈ Flow</button>
+  <button onclick="show(3,this)">⚡ Drive</button>
+  <button onclick="show(4,this)">▤ Shaft</button>
+  <button onclick="show(5,this)">▣ Drawing</button>
+  <button onclick="show(6,this)">✚ CIP</button>
+  <button onclick="show(7,this)">◉ Instr.</button>
+  <button onclick="show(8,this)">☰ BOQ</button>
+  <button onclick="show(9,this)" style="background:#0B6E4F;color:#fff">⚗ Recipe</button>
+  <button onclick="show(10,this)" style="background:#0B6E4F;color:#fff">✳ Blades</button>
+  <button onclick="show(11,this)" style="background:#0B6E4F;color:#fff">◎ Pumps</button>
+</nav>
+<main>
+<noscript><div style="background:#FDEDE6;border:2px solid #C6410F;color:#7A2A0A;padding:14px;margin-bottom:14px;border-radius:8px;font-size:14px">
+This tool needs JavaScript. If you see this message on your phone, the viewer you used (WhatsApp / Gmail / Drive preview) blocks scripts — download the file to your device and open it with Chrome or Safari, or use the hosted link.</div></noscript>
+
+<!-- ============ TAB 0 : INPUTS ============ -->
+<section class="tab active" id="tab0">
+ <div class="grid2">
+  <div class="card">
+    <h2>Tank Geometry</h2>
+    <label>Load a reference tank (from your fabrication drawings)</label>
+    <select id="preset" onchange="loadPreset()">
+      <option value="">— manual entry —</option>
+      <option value="cr1">Crutcher 25 m³ SS304L — Ø2700 × 4600, cone bottom (ARMA dwg 7/10/2024)</option>
+      <option value="cr3">CR3 Crutcher 25-ton — Ø2709 × 4650, spiral impeller (dwg HE240626-01)</option>
+      <option value="st28">Storage tank 28T — Ø2860 × 4500, 120° cone (Quantum HM150724)</option>
+    </select>
+    <label>Tank inside diameter T <span class="unit">m</span></label>
+    <input type="number" id="T" value="2.0" step="0.1" min="0.2">
+    <label>Cylindrical (straight) height H <span class="unit">m</span></label>
+    <input type="number" id="H" value="2.4" step="0.1" min="0.2">
+    <label>Liquid fill level <span class="unit">% of straight height</span></label>
+    <input type="number" id="fill" value="85" step="1" min="10" max="100">
+    <label>Bottom head type</label>
+    <select id="bottom">
+      <option value="dished">Torispherical (dished) — recommended for agitation</option>
+      <option value="flat">Flat</option>
+      <option value="cone">Conical 90° included</option>
+    </select>
+    <label>Shell material</label>
+    <select id="mat">
+      <option>Stainless Steel 316L</option>
+      <option>Stainless Steel 304</option>
+      <option>Carbon Steel + coating</option>
+    </select>
+    <label>Design pressure</label>
+    <select id="press">
+      <option value="atm">Atmospheric / vented</option>
+      <option value="closed">Closed, 0–0.5 barg (breathing tank)</option>
+      <option value="pressure">Pressure vessel &gt; 0.5 barg</option>
+    </select>
+  </div>
+  <div class="card">
+    <h2>Fluid & Duty</h2>
+    <label>Fluid density ρ <span class="unit">kg/m³</span></label>
+    <input type="number" id="rho" value="1100" step="10" min="1">
+    <label>Fluid viscosity μ <span class="unit">cP / mPa·s (water = 1 cP, your gel specs ≈ 7000–10000 cP)</span></label>
+    <input type="number" id="mu" value="50" step="1" min="0.1">
+    <label>Rheology</label>
+    <select id="rheo">
+      <option value="newton">Newtonian</option>
+      <option value="shear">Shear-thinning (non-Newtonian, Metzner–Otto Ks≈11–19)</option>
+    </select>
+    <label>Primary process goal</label>
+    <select id="goal">
+      <option value="blend">Blending / homogenization</option>
+      <option value="susp_l">Solid suspension — light (&lt;10 wt%)</option>
+      <option value="susp_h">Solid suspension — heavy / gas dispersion</option>
+      <option value="hx">Heat transfer / crystallization</option>
+      <option value="disp">High-shear dispersion / emulsification</option>
+      <option value="visc">High-viscosity mixing (μ &gt; 5000 cP)</option>
+    </select>
+    <label>Duty intensity</label>
+    <select id="duty">
+      <option value="mild">Mild</option>
+      <option value="med" selected>Medium</option>
+      <option value="vig">Vigorous</option>
+    </select>
+    <label>Hygienic / CIP service?</label>
+    <select id="hyg"><option value="yes">Yes — sanitary (ASME BPE)</option><option value="no">No — industrial</option></select>
+    <label>Fill time target <span class="unit">min</span></label>
+    <input type="number" id="tfill" value="30" step="5" min="2">
+    <label>Drain time target <span class="unit">min</span></label>
+    <input type="number" id="tdrain" value="45" step="5" min="2">
+    <button class="btn" onclick="calcAll()">Run full design →</button>
+  </div>
+ </div>
+ <div class="card">
+   <h2>Live tank preview</h2>
+   <div class="drawwrap" id="preview"></div>
+ </div>
+</section>
+
+<!-- ============ TAB 1 : SELECTION ============ -->
+<section class="tab" id="tab1">
+  <div class="grid3" id="kpis"></div>
+  <div class="grid2">
+    <div class="card"><h2>Selected impeller & hydraulics</h2><div id="selres"></div>
+      <div class="ref" id="selref"></div></div>
+    <div class="card"><h2>Impeller sketch & alternatives</h2><div id="impsvg"></div><div id="alts"></div></div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 : FLOW ============ -->
+<section class="tab" id="tab2">
+  <div class="card"><h2>Predicted flow pattern</h2>
+    <div class="drawwrap" id="flowsvg"></div>
+    <div class="note" id="flownote"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 3 : DRIVE ============ -->
+<section class="tab" id="tab3">
+  <div class="grid2">
+    <div class="card"><h2>Motor selection (IEC 60034 / 60072)</h2><div id="motorres"></div></div>
+    <div class="card"><h2>Gearbox selection</h2><div id="gearres"></div>
+      <div class="ref">Gearbox family rules per SEW-Eurodrive / Nord / Sumitomo catalog practice: inline helical for i ≤ 60, helical-bevel for right-angle or i ≤ 110, planetary above ≈ 20 kN·m output torque. Service factor per AGMA 6013 for agitator duty (24 h, moderate shock).</div></div>
+  </div>
+</section>
+
+<!-- ============ TAB 4 : SHAFT ============ -->
+<section class="tab" id="tab4">
+  <div class="grid2">
+    <div class="card"><h2>Shaft design (ASME combined loading)</h2><div id="shaftres"></div>
+      <div class="ref">Method: d³ = (16/π·τ<sub>all</sub>)·√[(K<sub>b</sub>M)² + (K<sub>t</sub>T)²]; hydraulic side load F<sub>h</sub> ≈ 19000·P<sub>kW</sub>/(N·D) per Fasano/Chemineer practice; lateral critical speed of cantilever with end mass, operating limit ≤ 0.65·N<sub>c</sub>. Axial thrust for helical ribbon per Bortnikov et al. (1973): P<sub>ax</sub> = K₂·μ·n·d<sub>m</sub>².</div></div>
+    <div class="card"><h2>Mounting / fixation on tank</h2><div id="mountres"></div>
+      <div class="ref">Mounting flange per DIN 28137-2 agitator nozzle series; beam mounting per vendor practice above 15 kW or shaft &gt; DN80 nozzle capability. Gusseted pads on head with load spreading ≥ 3× flange OD footprint.</div></div>
+  </div>
+</section>
+
+<!-- ============ TAB 5 : DRAWING ============ -->
+<section class="tab" id="tab5">
+  <div class="card">
+    <h2>General arrangement / fabrication drawing</h2>
+    <button class="btn sec noprint" onclick="window.print()">Print / save PDF</button>
+    <div class="drawwrap" id="fabdraw" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 6 : CIP / NOZZLES ============ -->
+<section class="tab" id="tab6">
+  <div class="grid2">
+    <div class="card"><h2>CIP spray devices (ASME BPE)</h2><div id="cipres"></div>
+      <div class="ref">Coverage rule: 2.5–3.0 US gpm per foot of vessel circumference ≈ 31–37 L/min per meter (ASME BPE SD-3.6 practice / Alfa Laval & Lechler sizing guides). Agitator internals create spray shadow → minimum two devices offset 180°, positioned to wet shaft and blade backsides. Static ball ≤ 3 bar; rotary jet for Ø &gt; 3.5 m or heavy soils.</div></div>
+    <div class="card"><h2>Process nozzles & vent</h2><div id="nozres"></div>
+      <div class="ref">Line sizing at v ≤ 2.0 m/s inlet, ≤ 1.5 m/s gravity outlet. Vent sized for maximum air displacement (pump-in/out) + thermal breathing, concept per API 2000; hygienic tanks receive sterile air filter (0.2 µm) sized at ≤ 8 m/s face velocity.</div></div>
+  </div>
+  <div class="card"><h2>Spray ball placement plan view</h2><div class="drawwrap" id="cipsvg"></div></div>
+</section>
+
+<!-- ============ TAB 7 : INSTRUMENTS ============ -->
+<section class="tab" id="tab7">
+  <div class="card"><h2>Instrumentation schedule</h2><div id="instres"></div></div>
+  <div class="card"><h2>Safety precautions & interlocks</h2><div id="safres"></div></div>
+</section>
+
+<!-- ============ TAB 8 : BOQ ============ -->
+<section class="tab" id="tab8">
+  <div class="card">
+    <h2>Bill of quantities — fabricator issue</h2>
+    <button class="btn sec noprint" onclick="exportCSV()">Download CSV</button>
+    <div id="boqres"></div>
+  </div>
+</section>
+
+<!-- ============ TAB 9 : MATERIALS & RECIPE ============ -->
+<section class="tab" id="tab9">
+ <div class="card">
+  <h2>Batch recipe builder — up to 30 raw materials</h2>
+  <p style="font-size:12px;color:var(--ink2);margin-bottom:8px">Pick each raw material and its weight %. Physical properties are pulled from the material database; the mixture properties and GHS hazard roll-up are computed and can be applied directly to the agitator design. Add materials in your SOP addition order — the sequence table follows row order.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn sec noprint" onclick="addRow()">+ Add material row</button>
+    <select id="recipePreset" style="max-width:340px" onchange="loadRecipe()">
+      <option value="">— load recipe template from your SOPs —</option>
+      <option value="dwl">Oxi / Wafeer DWL (dishwashing liquid)</option>
+      <option value="gel">Oxi Gel LS/HS (laundry gel)</option>
+      <option value="soft">Fabric softener (diluted/concentrated)</option>
+      <option value="hwsg">Hand wash / Shower gel (Rivoli · Dosh · Bright · Joy)</option>
+      <option value="apc">Brix APC</option>
+      <option value="deg">Brix Degreaser</option>
+      <option value="glass">Brix Glass cleaner</option>
+      <option value="stain">Brix Stain remover</option>
+      <option value="tcacid">Brix Toilet cleaner (HCl, Black)</option>
+    </select>
+  </div>
+  <table id="rectab"><tr><th>#</th><th>Raw material</th><th>wt %</th><th>ρ kg/m³</th><th>μ cP</th><th>State</th><th>GHS hazards</th><th></th></tr></table>
+  <div class="grid3" style="margin-top:14px">
+    <div class="kpi"><div class="lab">Σ wt%</div><div class="big" id="rsum">0</div></div>
+    <div class="kpi"><div class="lab">Mixture density</div><div class="big" id="rrho">—</div></div>
+    <div class="kpi"><div class="lab">Blend viscosity (ideal est.)</div><div class="big" id="rmu">—</div></div>
+  </div>
+  <label>Final product viscosity from QC spec, if known <span class="unit">cP / mPa·s — e.g. Rivoli SG spec: 7000–10000; overrides the ideal estimate because surfactant/salt thickening is non-ideal</span></label>
+  <input type="number" id="muOverride" placeholder="e.g. 8500">
+  <div id="hazroll"></div>
+  <button class="btn" onclick="applyRecipe()">Apply mixture to design inputs →</button>
+ </div>
+ <div class="card"><h2>Material database — physical properties & GHS classification</h2><div id="matdb"></div>
+ <div class="ref">Properties are typical supplier values at 25 °C for the concentrations named; verify against your delivered SDS/CoA. GHS pictogram codes: GHS02 flammable · GHS03 oxidizer · GHS05 corrosive · GHS06 acute toxic · GHS07 irritant/harmful · GHS08 health hazard (CMR/sensitizer) · GHS09 aquatic.</div></div>
+ <div class="card"><h2>Addition sequence & safety checks</h2><div id="seqres"></div></div>
+</section>
+
+<!-- ============ TAB 10 : IMPELLER LIBRARY ============ -->
+<section class="tab" id="tab10">
+ <div class="card"><h2>Agitator blade library — types, shape, data</h2><div id="implib"></div>
+  <div class="ref">Blend-time columns are the comparative laboratory data from your impeller reference chart (identical tank, blade area ≈ 630–675 mm², 400/500 rpm). Np and flow class per Handbook of Industrial Mixing; close-clearance data per Bortnikov (1973) & Ameur (2018). The double-angle curved blade (your 25 m³ crutcher) behaves as a wide-blade pitched turbine: mixed flow, Np ≈ 1.6.</div></div>
+ <div class="grid2">
+  <div class="card"><h2>Selection justification — scoring vs. current duty</h2><div id="justres"></div></div>
+  <div class="card"><h2>Candidate comparison chart</h2><div id="justchart"></div></div>
+ </div>
+</section>
+
+<!-- ============ TAB 11 : PUMP SELECTION ============ -->
+<section class="tab" id="tab11">
+ <div class="grid2">
+  <div class="card"><h2>Pump duty inputs</h2>
+    <label>Service</label>
+    <select id="psvc"><option value="dispatch">Dispatch / transfer to storage</option><option value="cip">CIP supply</option><option value="dosing">Dosing / premix transfer</option></select>
+    <label>Flow rate <span class="unit">m³/h (defaults from tank drain / CIP demand)</span></label>
+    <input type="number" id="pQ" value="30">
+    <label>Total head <span class="unit">m</span></label>
+    <input type="number" id="pH" value="25">
+    <label>Shear-sensitive product? <span class="unit">(pearlizer, capsules, thickened gel)</span></label>
+    <select id="pshear"><option value="no">No</option><option value="yes">Yes</option></select>
+    <button class="btn" onclick="calcPump()">Select pump →</button>
+  </div>
+  <div class="card"><h2>Pump type selection rules (API 676 / ISO 5199 / EHEDG)</h2><div id="prules"></div></div>
+ </div>
+ <div class="card"><h2>Generated pump datasheet</h2><div id="pds"></div></div>
+ <div class="card"><h2>Pump performance & efficiency charts</h2>
+   <div class="grid2"><div class="drawwrap" id="pcurve"></div><div class="drawwrap" id="pvisc"></div></div>
+   <div class="ref">Left: representative performance map for the selected pump family with your duty point; the centrifugal efficiency curve peaks at the Best Efficiency Point (BEP) and the duty should sit within 80–110% of BEP Q per ANSI/HI 9.6.3 (preferred operating region). Right: attainable pump efficiency vs product viscosity per HI 9.6.7 viscosity-correction trends — the vertical marker is your current product; the selection logic picks the family with the highest efficiency (and acceptable shear) at that viscosity.</div>
+ </div>
+ <div class="grid2">
+  <div class="card"><h2>Recommended vendors — pumps</h2><div id="pvend"></div></div>
+  <div class="card"><h2>Recommended vendors — instruments (PLC/SCADA-ready)</h2><div id="ivend"></div></div>
+ </div>
+</section>
+
+</main>
+<footer>Engineering references: Bortnikov, Pavlushenko & Medvedev (1973) helical ribbon design · Ameur, Kamla & Sahel (2018) ChemEngineering 2:26 · Paul, Atiemo-Obeng & Kresta, <i>Handbook of Industrial Mixing</i> · ASME BPE · API 2000 · DIN 28137 · IEC 60034/60072 · AGMA 6013. Results are preliminary sizing — verify with vessel FEA / vendor confirmation before fabrication.</footer>
+<script>
+/* ================= DATA TABLES ================= */
+const IMPELLERS = {
+  hydrofoil:{name:"Hydrofoil (high-efficiency, 3-blade)",Np:0.30,DT:0.40,Ntheta:5, flow:"axial",
+    why:"Lowest power number; strong axial pumping — best €/m³ for turbulent blending."},
+  pbt:{name:"Pitched-blade turbine 4×45°",Np:1.35,DT:0.40,Ntheta:10, flow:"mixed",
+    why:"Combined axial+radial; robust for solids lift-off and general duty."},
+  rushton:{name:"Rushton turbine 6-blade disc",Np:5.0,DT:0.33,Ntheta:20, flow:"radial",
+    why:"High shear radial discharge; standard for gas dispersion / heavy suspension."},
+  sawtooth:{name:"Sawtooth (Cowles) disperser",Np:0.65,DT:0.30,Ntheta:25, flow:"radial",
+    why:"Very high tip speed shear zone for dispersion/emulsification."},
+  anchor:{name:"Anchor, 2-arm close-clearance",Kp:300,DT:0.95,Ntheta:50, flow:"tangential",
+    why:"Wall-sweeping for 5–50 Pa·s; promotes wall heat transfer."},
+  ribbon:{name:"Double helical ribbon (close-clearance)",Kp:300,DT:0.93,Ntheta:40, flow:"tangential",
+    why:"Best top-to-bottom turnover in laminar regime (Bortnikov 1973; Ameur 2018)."}
+};
+const MOTOR_KW=[0.37,0.55,0.75,1.1,1.5,2.2,3,4,5.5,7.5,11,15,18.5,22,30,37,45,55,75,90,110,132,160,200,250];
+const IEC_FRAME={0.37:"71",0.55:"80",0.75:"80",1.1:"90S",1.5:"90L",2.2:"100L",3:"100L",4:"112M",5.5:"132S",7.5:"132M",11:"160M",15:"160L",18.5:"180M",22:"180L",30:"200L",37:"225S",45:"225M",55:"250M",75:"280S",90:"280M",110:"315S",132:"315M",160:"315L",200:"315L",250:"355M"};
+const DN=[15,25,40,50,65,80,100,125,150,200,250,300,350,400];
+const PV={blend:{mild:150,med:300,vig:500}, susp_l:{mild:400,med:600,vig:900},
+  susp_h:{mild:800,med:1200,vig:1800}, hx:{mild:200,med:350,vig:600},
+  disp:{mild:1500,med:2500,vig:4000}, visc:{mild:150,med:300,vig:600}};
+
+let R={}; // results object
+
+const $=id=>document.getElementById(id);
+const f=(x,d=2)=>Number(x).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:0});
+function show(i,btn){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function nextDN(d_mm){for(const dn of DN){if(dn>=d_mm)return dn;}return 400;}
+function row(k,v,warn){return `<div class="res${warn?' warn':''}"><span>${k}</span><b>${v}</b></div>`;}
+
+/* ================= MAIN ================= */
+function calcAll(){
+  const T=+$('T').value, Hs=+$('H').value, fill=+$('fill').value/100,
+        rho=+$('rho').value, mu=+$('mu').value/1000, goal=$('goal').value,
+        duty=$('duty').value, bottom=$('bottom').value, hyg=$('hyg').value==='yes',
+        rheo=$('rheo').value, press=$('press').value, mat=$('mat').value;
+
+  // ---- volume ----
+  const headV = bottom==='dished'?0.0847*T**3 : bottom==='cone'?Math.PI/24*T**3 : 0;
+  const Vtot = Math.PI/4*T*T*Hs + headV;
+  const Z = Hs*fill;                       // liquid straight height
+  const V = Math.PI/4*T*T*Z + headV;       // working volume m³
+
+  // ---- impeller pick ----
+  let key;
+  if(goal==='visc' || mu>5) key = mu>50 ? 'ribbon' : 'anchor';
+  else if(goal==='disp') key='sawtooth';
+  else if(goal==='susp_h') key='rushton';
+  else if(goal==='susp_l') key='pbt';
+  else if(goal==='hx') key = mu>1?'anchor':'pbt';
+  else key = mu>1?'pbt':'hydrofoil';
+  const imp=IMPELLERS[key];
+  const laminarType = (key==='anchor'||key==='ribbon');
+
+  const D = imp.DT*T;
+  const C = laminarType ? 0.05*T : Math.max(0.15*T, D/3); // off-bottom clearance
+  const nImp = laminarType ? 1 : Math.max(1, Math.ceil((Z-C)/(1.2*D)));
+
+  // ---- target power from P/V ----
+  const Ptar = PV[goal][duty]*V; // W
+
+  // ---- solve speed ----
+  let N, P, Re, regime;
+  if(laminarType){
+    // Bortnikov: P = Kp·μ·n²·d³ per ribbon set (Kp=300 for D/dm=1.07)
+    const Kp = key==='ribbon'?300:250; // anchor slightly lower drag
+    N = Math.sqrt(Ptar/(Kp*mu*D**3));            // rps
+    P = Kp*mu*N*N*D**3 * nImp;
+    Re = rho*N*D*D/mu; regime = Re<10?'Laminar':'Transitional';
+    if(Re>100){ // fell out of laminar validity → clamp with turbulent Np≈1
+      P = 1.0*rho*N**3*D**5;
+    }
+  }else{
+    let NpEff = imp.Np;
+    N = Math.cbrt(Ptar/(NpEff*rho*D**5*nImp));   // rps
+    Re = rho*N*D*D/mu;
+    if(Re<10000){ NpEff = imp.Np*(1+ (10000/Math.max(Re,50))**0.25*0.35); } // low-Re penalty
+    N = Math.cbrt(Ptar/(NpEff*rho*D**5*nImp));
+    Re = rho*N*D*D/mu;
+    regime = Re>10000?'Turbulent':Re>10?'Transitional':'Laminar';
+    P = NpEff*rho*N**3*D**5*nImp;
+  }
+  // tip speed sanity
+  let tip = Math.PI*D*N;
+  const tipMax = key==='sawtooth'?23 : hyg?5.5:7.5;
+  if(key==='sawtooth' && tip<15){ N = 18/(Math.PI*D); P = imp.Np*rho*N**3*D**5; tip=Math.PI*D*N;}
+  if(tip>tipMax){ N = tipMax/(Math.PI*D); P = laminarType? (300*mu*N*N*D**3*nImp) : imp.Np*rho*N**3*D**5*nImp; tip=tipMax;}
+  Re = rho*N*D*D/mu;
+
+  const Nrpm = N*60;
+  const Pkw = P/1000;
+  const mixT = imp.Ntheta/N * (rheo==='shear'?1.4:1);
+  const Pax = laminarType ? 46*mu*N*D*D : 0; // Bortnikov Eq.2, K2=46 (GD 1.07) — N in rps → kgf → N
+  const PaxN = Pax*9.81;
+
+  // ---- motor ----
+  const SF = 1.25;                       // hydraulic margin
+  const gearEff=0.94, sealDrag= hyg?0.97:0.98;
+  const PmotReq = Pkw*SF/(gearEff*sealDrag);
+  const Pmot = MOTOR_KW.find(k=>k>=PmotReq)||250;
+  const frame = IEC_FRAME[Pmot];
+  const Nmot = 1450;                      // 4-pole 50 Hz
+  const ratio = Nmot/Nrpm;
+  const Tq = 9550*Pkw/Nrpm;               // N·m process torque
+  const TqDesign = 9550*Pmot/Nrpm;        // torque at motor nameplate through ratio
+  let gtype, gstage;
+  if(ratio<=8){gtype="Inline helical (R series)";gstage="1–2 stage";}
+  else if(ratio<=60){gtype="Inline helical (R series)";gstage="2–3 stage";}
+  else if(ratio<=110){gtype="Helical-bevel (K series) or parallel helical (F)";gstage="3 stage";}
+  else {gtype="Planetary + helical primary";gstage="3–4 stage";}
+  if(TqDesign>20000) gtype="Planetary (P series) — high torque class";
+  const fs = 1.5 + (duty==='vig'?0.25:0) + (goal==='susp_h'?0.25:0); // AGMA service factor
+
+  // ---- shaft ----
+  const L = Z + 0.35;                     // overhung length: liquid depth + head clearance
+  const Fh = 19000*Pkw/(Nrpm*D) * (key==='rushton'?1.5:1.0); // hydraulic side load N
+  const M = Fh*(L-C) + PaxN*0.05*D;       // bending moment N·m
+  const tau = mat.includes('316')?52e6 : mat.includes('304')?55e6 : 58e6; // allowable shear Pa (w/ fatigue+corrosion)
+  const Kb=1.7, Kt=1.3;
+  const d3 = 16/(Math.PI*tau)*Math.sqrt((Kb*M)**2+(Kt*TqDesign)**2);
+  let dShaft = Math.cbrt(d3)*1000;        // mm
+  // critical speed — cantilever w/ end mass
+  const E = mat.includes('Carbon')?200e9:193e9, rhoS = mat.includes('Carbon')?7850:8000;
+  function Ncrit(dmm){
+    const dm=dmm/1000, I=Math.PI*dm**4/64, A=Math.PI*dm*dm/4;
+    const mImp = 40*D**2*nImp;            // impeller mass estimate kg
+    const mSh = rhoS*A*L;
+    const kstiff = 3*E*I/L**3;
+    return 60/(2*Math.PI)*Math.sqrt(kstiff/(mImp+0.23*mSh));
+  }
+  while(Nrpm > 0.65*Ncrit(dShaft)) dShaft+=5;
+  const dStd=[40,50,60,70,80,90,100,110,125,140,160,180,200].find(d=>d>=dShaft)||220;
+  const Nc = Ncrit(dStd);
+
+  // ---- mounting ----
+  const flangeDN = dStd<=50?"DN200 PN10":dStd<=70?"DN250 PN10":dStd<=90?"DN300 PN10":dStd<=110?"DN350 PN10":"DN400 PN16";
+  const bolts = dStd<=70?8:12;
+  const beam = Pmot>15 || dStd>110;
+
+  // ---- nozzles / vent ----
+  const Qfill=V/(+$('tfill').value*60), Qdrain=V/(+$('tdrain').value*60); // m³/s
+  const dIn=Math.sqrt(4*Qfill/(Math.PI*2.0))*1000, dOut=Math.sqrt(4*Qdrain/(Math.PI*1.5))*1000;
+  const DNin=nextDN(dIn), DNout=nextDN(dOut);
+  const Qair=Math.max(Qfill,Qdrain)*1.25 + V*0.25/3600; // displacement + thermal (API 2000 simplified)
+  const dVent=Math.sqrt(4*Qair/(Math.PI*(hyg?8:10)))*1000;
+  const DNvent=nextDN(dVent);
+  const ventType = press==='atm' ? (hyg?"Sterile air filter 0.2 µm + goose-neck":"Free vent + insect screen, goose-neck")
+    : press==='closed' ? "Pressure/vacuum relief valve (PVRV) per API 2000" : "PSV per ASME VIII + rupture disc backup";
+
+  // ---- CIP ----
+  const circ=Math.PI*T;
+  const Qcip=34*circ;                     // L/min
+  let nBalls = 2;                          // agitator shadow ⇒ min 2
+  if(T>3.5) nBalls=3;
+  if(Z>3) nBalls+=1;
+  const ballType = T>3.5?"Rotary jet head":"Static spray ball 360°, drilled per shadow study";
+  const cipConn = nextDN(Math.sqrt(4*(Qcip/60000)/(Math.PI*2.5))*1000);
+
+  R={T,Hs,Z,V,Vtot,rho,mu,goal,duty,bottom,hyg,key,imp,D,C,nImp,N,Nrpm,P,Pkw,Re,regime,tip,mixT,
+     PaxN,Pmot,frame,Nmot,ratio,Tq,TqDesign,gtype,gstage,fs,L,Fh,M,dShaft,dStd,Nc,flangeDN,bolts,beam,
+     Qfill,Qdrain,DNin,DNout,DNvent,ventType,Qcip,nBalls,ballType,cipConn,mat,press,laminarType};
+
+  renderAll();
+  show(1,document.querySelectorAll('nav button')[1]);
+}
+
+/* ================= RENDER ================= */
+function renderAll(){
+  drawPreview(); renderSel(); drawImp(); drawFlow(); renderDrive(); renderShaft(); drawFab(); renderCIP(); drawCIP(); renderInst(); renderBOQ();
+  renderMatDB(); renderLib();
+  $('pQ').value=f((R.Qdrain||0.008)*3600,1); calcPump();
+}
+
+function renderSel(){
+  $('kpis').innerHTML=`
+   <div class="kpi"><div class="lab">Absorbed power</div><div class="big">${f(R.Pkw,2)} kW</div><div class="unit">${f(R.Pkw*1.341,1)} hp</div></div>
+   <div class="kpi"><div class="lab">Shaft speed</div><div class="big">${f(R.Nrpm,1)} rpm</div><div class="unit">${f(R.Nrpm/60,2)} rev/s · tip ${f(R.tip,1)} m/s (${f(R.tip*196.85,0)} ft/min)</div></div>
+   <div class="kpi"><div class="lab">Torque</div><div class="big">${f(R.Tq,0)} N·m</div><div class="unit">${f(R.Tq*0.7376,0)} lbf·ft</div></div>`;
+  const foamNote = window._foaming ? `<div class="note">Surfactant recipe detected (SLES/LABSA/betaine): add a <b>foam-breaking impeller</b> near the max liquid surface plus an overflow nozzle — exactly as on your 25 m³ crutcher drawing. Included in BOQ.</div>` : "";
+  $('selres').innerHTML =
+    row("Impeller type", R.imp.name)+
+    row("Impeller diameter D", f(R.D,3)+" m  (D/T = "+f(R.D/R.T,2)+")")+
+    row("Number of impellers", R.nImp + (R.laminarType?" (full-height element)":""))+
+    row("Off-bottom clearance C", f(R.C,3)+" m")+
+    row("Working volume", f(R.V,2)+" m³")+
+    row("Reynolds number", f(R.Re,0)+"  → "+R.regime, R.regime==='Transitional')+
+    row("Tip speed", f(R.tip,2)+" m/s")+
+    row("Specific power P/V", f(R.P/R.V,0)+" W/m³")+
+    row("Estimated blend time", f(R.mixT,0)+" s")+
+    (R.laminarType?row("Axial thrust on shaft (Bortnikov)", f(R.PaxN,0)+" N"):"")+
+    `<div style="margin-top:10px"><span class="badge">${R.imp.flow.toUpperCase()} FLOW</span>
+      <span class="badge">${R.hyg?'HYGIENIC':'INDUSTRIAL'}</span></div>
+     <p style="font-size:13px;margin-top:10px;color:var(--ink2)">${R.imp.why}</p>`+foamNote;
+  $('selref').innerHTML = R.laminarType ?
+    "Laminar power basis N = K·μ·n²·d³ with K = 300 (D/d = 1.07) per Bortnikov, Pavlushenko & Medvedev (1973); a double ribbon consumes 35–40% more than single at equal conditions. Close-clearance requirement confirmed by Ameur et al. (2018) CFD: blade must approach the wall or dead zones form." :
+    "Turbulent power basis P = Np·ρ·N³·D⁵ with catalog power numbers; low-Re correction applied in the transitional band. Impeller ranking logic follows Handbook of Industrial Mixing and the comparative data in your project literature.";
+
+}
+
+function renderDrive(){
+  $('motorres').innerHTML =
+    row("Process power at shaft", f(R.Pkw,2)+" kW")+
+    row("Margin (hydraulic 25% + drive losses)", "×"+f(1.25/(0.94*0.975),2))+
+    row("Selected motor rating", f(R.Pmot,2)+" kW", false)+
+    row("IEC frame size", R.frame+" — B5 flange, 4-pole")+
+    row("Motor speed", R.Nmot+" rpm (50 Hz)")+
+    row("Protection / efficiency", (R.press!=='atm'?"Ex db eb IIB T4 (verify area class), ":"")+"IE3, IP55, F-class")+
+    `<div class="note">Add VFD (vector control) for soft start and speed turndown — reduces gearbox shock load and allows process flexibility. Motor thermistors (PTC) wired to drive.</div>`;
+  $('gearres').innerHTML =
+    row("Required output speed", f(R.Nrpm,1)+" rpm")+
+    row("Exact ratio i", f(R.ratio,1)+" : 1")+
+    row("Gearbox family", R.gtype)+
+    row("Stages", R.gstage)+
+    row("Design output torque", f(R.TqDesign,0)+" N·m")+
+    row("Service factor (AGMA 6013, 24 h agitator duty)", "fs ≥ "+f(R.fs,2))+
+    row("Required gearbox torque rating", "≥ "+f(R.TqDesign*R.fs,0)+" N·m")+
+    row("Output shaft", "Solid, with drywell to protect against product vapors")+
+    `<div class="note">Order gearbox with reinforced output bearings rated for combined overhung load ${f(R.Fh,0)} N and axial thrust ${f(Math.max(R.PaxN, R.rho*9.81*R.Z*Math.PI/4*(R.dStd/1000)**2),0)} N, or use a separate lantern/bearing pedestal.</div>`;
+}
+
+function renderShaft(){
+  $('shaftres').innerHTML =
+    row("Overhung length L", f(R.L,2)+" m")+
+    row("Hydraulic side load F<sub>h</sub>", f(R.Fh,0)+" N")+
+    row("Bending moment at flange", f(R.M,0)+" N·m")+
+    row("Design torque", f(R.TqDesign,0)+" N·m")+
+    row("Allowable shear (incl. fatigue, "+R.mat+")", f((R.mat.includes('Carbon')?58:R.mat.includes('304')?55:52),0)+" MPa")+
+    row("Calculated minimum diameter", f(R.dShaft,1)+" mm")+
+    row("Selected standard shaft", "Ø "+R.dStd+" mm", false)+
+    row("First lateral critical speed N<sub>c</sub>", f(R.Nc,0)+" rpm")+
+    row("Operating ratio N/N<sub>c</sub>", f(R.Nrpm/R.Nc,2)+"  (limit ≤ 0.65)", R.Nrpm/R.Nc>0.65)+
+    row("Shaft construction", R.L>3?"Two-piece with rigid coupling, in-tank steady bearing NOT used (hygienic)":"Single piece, machined & polished")+
+    row("Impeller hub", "Keyed + locked, "+(R.hyg?"crevice-free welded hub":"split clamp hub"));
+  $('mountres').innerHTML =
+    row("Mounting style", R.beam?"Beam/bridge mounted over open top with pedestal":"Nozzle flange mounted on top head")+
+    row("Agitator nozzle / flange", R.flangeDN+" per DIN 28137-2")+
+    row("Bolting", R.bolts+" × M20 (8.8), PTFE-envelope gasket")+
+    row("Head reinforcement", "Doubler pad Ø "+f(3*(R.dStd*2.5)/1000,2)+" m with "+(R.beam?"4 support beams UPN140 to shell ring":"gussets ×"+R.bolts/2))+
+    row("Sealing", R.press==='atm'?(R.hyg?"Hygienic lip seal cartridge":"Stuffing box, PTFE packing"):"Single/double mechanical seal, plan 52 quench for pressure duty")+
+    row("Fixation points on tank", (R.beam?"4 shell brackets + 2 bridge beams; ":"")+"agitator flange at 0°, ± jacking pads at 90°/270°")+
+    `<div class="note">Verify nozzle loads (M = ${f(R.M,0)} N·m, F = ${f(R.Fh+R.PaxN,0)} N) against vessel head per local code (EN 13445 / ASME VIII Div.1 App. hereof). For beam mounting, deflection at agitator centerline ≤ 0.5 mm.</div>`;
+}
+
+function renderCIP(){
+  $('cipres').innerHTML =
+    row("Vessel circumference", f(Math.PI*R.T,2)+" m")+
+    row("CIP flow required", f(R.Qcip,0)+" L/min ("+f(R.Qcip*0.06,1)+" m³/h)")+
+    row("Number of spray devices", R.nBalls)+
+    row("Device type", R.ballType)+
+    row("Supply connection", "DN"+R.cipConn+" each, Tri-Clamp"+(R.hyg?" (ASME BPE)":""))+
+    row("Locations", "Top head, PCD "+f(0.5*R.T,2)+" m, devices offset 180°"+(R.nBalls>2?" / 120°":"")+"; lowest ball ≥ 150 mm above max liquid line")+
+    row("Pressure at device", "1.5 – 2.5 bar (static ball) — do not exceed 3 bar (atomization)")+
+    `<div class="note">Shadow rule: agitator shaft and blades block spray — one device each side of the shaft, drilled patterns aimed at blade backsides and baffle edges. Validate with riboflavin coverage test per ASME BPE SD.</div>`;
+  $('nozres').innerHTML =
+    row("Fill flow", f(R.Qfill*3600,1)+" m³/h → inlet DN"+R.DNin)+
+    row("Drain flow", f(R.Qdrain*3600,1)+" m³/h → outlet DN"+R.DNout+(R.hyg?" via zero-deadleg tank bottom valve":""))+
+    row("Outlet position", R.bottom==='cone'?"Cone apex, flush":"Center-bottom, flush pad (full drainability, slope ≥ 3°)")+
+    row("Vent size", "DN"+R.DNvent)+
+    row("Vent type", R.ventType)+
+    row("Spare nozzles", "1 × DN50 (dosing), 1 × DN150 manway sight/light combo, 1 × DN"+R.cipConn+" spare CIP");
+}
+
+function renderInst(){
+  $('instres').innerHTML=`<table><tr><th>Tag</th><th>Service</th><th>Instrument</th><th>Connection</th><th>PLC/SCADA signal</th><th>Typical suppliers</th><th>Notes</th></tr>
+  <tr><td>LT-01</td><td class="l">Continuous level</td><td class="l">${R.hyg?'80 GHz radar, hygienic horn':'Guided-wave radar or DP cell'}</td><td>DN${R.hyg?50:80} top</td><td class="l">4–20 mA HART / Profinet</td><td class="l">VEGA · E+H · Siemens</td><td class="l">Avoid agitator beam path; ≥ ${f(0.15*R.T,2)} m from wall</td></tr>
+  <tr><td>WT-01</td><td class="l">Batch weight (30-material dosing)</td><td class="l">${R.bottom==='cone'?'3':'4'}× load cells under legs + weigh terminal</td><td class="l">Leg mounts</td><td class="l">Profinet / EtherNet-IP weighing module</td><td class="l">Mettler-Toledo · HBK · Minebea Intec</td><td class="l">Primary quantity control for formula additions per your SOPs; flexible pipe connections required</td></tr>
+  <tr><td>LSH-02</td><td class="l">High level switch</td><td class="l">Vibrating fork</td><td>DN25 side</td><td class="l">NAMUR / IO-Link</td><td class="l">E+H Liquiphant · VEGASWING</td><td class="l">Trips inlet valve (SIL-rated option)</td></tr>
+  <tr><td>LSL-03</td><td class="l">Low level switch</td><td class="l">Vibrating fork</td><td>DN25 @ impeller cover level</td><td class="l">NAMUR / IO-Link</td><td class="l">E+H · VEGA</td><td class="l">Agitator + pump dry-run interlock</td></tr>
+  <tr><td>PT-04</td><td class="l">Pressure</td><td class="l">Flush-diaphragm transmitter</td><td>DN25/Tri-Clamp</td><td class="l">4–20 mA HART</td><td class="l">E+H Cerabar · WIKA · Yokogawa</td><td class="l">${R.press==='atm'?'Optional (blanket monitoring)':'Required — alarm + PSV supervision'}</td></tr>
+  <tr><td>TT-05</td><td class="l">Temperature</td><td class="l">Pt100 3-wire + head transmitter</td><td>DN25 lower third</td><td class="l">4–20 mA HART / IO-Link</td><td class="l">E+H · WIKA · JUMO</td><td class="l">Interlocks perfume addition &lt; 35 °C and batch max 35 °C per SOPs</td></tr>
+  <tr><td>AT-08</td><td class="l">pH (all SOPs adjust pH)</td><td class="l">Retractable pH assembly, Memosens digital</td><td class="l">DN50 side or bypass loop</td><td class="l">Memosens → 4–20 mA HART / Profinet</td><td class="l">E+H · Mettler-Toledo · Hamilton</td><td class="l">Auto-dosing loop for acid/caustic trim; retractable for CIP survival</td></tr>
+  <tr><td>AT-09</td><td class="l">CIP return conductivity</td><td class="l">Inline conductivity + temp</td><td class="l">CIP return line</td><td class="l">4–20 mA / IO-Link</td><td class="l">Anderson-Negele · E+H</td><td class="l">Verifies rinse completion — releases next batch (SOP: mixer must be clean)</td></tr>
+  <tr><td>FT-10</td><td class="l">Dosing flow (liquids)</td><td class="l">Electromagnetic flowmeter</td><td class="l">Dosing manifold</td><td class="l">Pulse + 4–20 mA / Profinet</td><td class="l">E+H Promag · Krohne · Siemens</td><td class="l">Cross-check vs. load cells for high-accuracy additions</td></tr>
+  <tr><td>ZS-06</td><td class="l">Agitator running/speed</td><td class="l">VFD feedback</td><td>—</td><td class="l">Profinet / EtherNet-IP</td><td class="l">Siemens · ABB · Danfoss</td><td class="l">Speed recorded in batch report (SOP: speed affects batch time)</td></tr>
+  <tr><td>VS-07</td><td class="l">Vibration</td><td class="l">Velocity switch on lantern</td><td>—</td><td class="l">4–20 mA / relay</td><td class="l">IFM · SKF · Hansford</td><td class="l">Trip 7.1 mm/s RMS (ISO 10816)</td></tr></table>
+  <div class="note">All analog instruments specified as 4–20 mA HART minimum for direct PLC AI cards (Siemens S7-1500 / Rockwell CompactLogix / Schneider M580); digital fieldbus (Profinet/EtherNet-IP) recommended for new installations so SCADA (WinCC, Ignition, Wonderware/AVEVA) gets full diagnostics and the batch record (ISA-88) captures weights, pH, temperature and mixer speed automatically.</div>`;
+  $('safres').innerHTML=`
+  <div class="note safe"><b>Interlocks:</b> Agitator start permissive requires liquid ≥ LSL-03 (impellers covered — prevents dry-run seal damage and shaft whip at low damping). Inlet closes at LSH-02. ${R.press!=='atm'?'PSV set ≤ design pressure; PT-04 high-high trips agitator and closes inlet.':''}</div>
+  <div class="note safe"><b>Mechanical:</b> Operating speed ${f(R.Nrpm,1)} rpm ≤ 0.65 × critical (${f(R.Nc,0)} rpm). Guard all rotating parts (ISO 14120). Manway interlock: agitator lockout (LOTO) required before entry — confined space procedure.</div>
+  <div class="note safe"><b>Electrical:</b> ${R.press!=='atm'?'Classify area (ATEX/IECEx) and match motor/instrument Ex ratings. ':''}Bond and earth tank, shaft (earthing brush across gearbox), and piping — static hazard with low-conductivity fluids.</div>
+  <div class="note safe"><b>Process:</b> Vent must remain unobstructed (vacuum collapse risk on drain — vent DN${R.DNvent} sized for ${f(Math.max(R.Qfill,R.Qdrain)*3600*1.25,1)} m³/h air). CIP chemicals: interlock spray supply with manway closed switch.</div>`;
+}
+
+function renderBOQ(){
+  const b=[
+   ["1","Agitator drive: IEC motor "+R.Pmot+" kW, 4-pole, frame "+R.frame+", IE3 IP55"+(R.press!=='atm'?", Ex db":""),"ea",1],
+   ["2","Gearbox: "+R.gtype+", i="+f(R.ratio,1)+", torque rating ≥ "+f(R.TqDesign*R.fs,0)+" N·m, drywell output","ea",1],
+   ["3","VFD, "+f(R.Pmot*1.1,1)+" kW, vector control, IP54 panel mount","ea",1],
+   ["4","Agitator shaft Ø"+R.dStd+" mm × "+f(R.L+0.4,2)+" m, "+R.mat+", machined, polished"+(R.hyg?" Ra≤0.8 µm":""),"ea",1],
+   ["5",R.imp.name+", Ø"+f(R.D,3)+" m, "+R.mat+(R.hyg?", crevice-free welded hub":", clamp hub"),"ea",R.nImp],
+   ["6","Mounting flange "+R.flangeDN+" per DIN 28137-2 incl. "+R.bolts+"× M20 bolting + gasket","set",1],
+   ...(R.beam?[["6b","Mounting bridge: 2× UPN140 beams + 4 shell brackets, "+R.mat,"set",1]]:[]),
+   ["7",(R.press==='atm'?(R.hyg?"Hygienic lip seal cartridge":"Stuffing box + PTFE packing set"):"Mechanical seal, single cartridge + quench pot"),"ea",1],
+   ["8","Tank shell Ø"+R.T+" m × "+R.Hs+" m, "+R.bottom+" bottom, "+R.mat+", per drawing","ea",1],
+   ["9","Baffles "+(R.laminarType?"NOT REQUIRED (close-clearance impeller)":"4× W="+f(R.T/12,3)+" m, wall offset "+f(R.T/60,3)+" m, full height"),"set",R.laminarType?0:1],
+   ["10",R.ballType+" incl. DN"+R.cipConn+" drop tube & clip","ea",R.nBalls],
+   ["11","Inlet nozzle DN"+R.DNin+(R.hyg?" Tri-Clamp":" PN16 flange")+" with dip pipe to below LSL","ea",1],
+   ["12","Outlet nozzle DN"+R.DNout+(R.hyg?" + zero-deadleg tank bottom valve":" + flush ball valve"),"ea",1],
+   ["13","Vent DN"+R.DNvent+": "+R.ventType,"ea",1],
+   ["14","Manway DN500 hinged, sight glass + light glass combo DN150","set",1],
+   ...(window._foaming?[["14b","Foam-breaking impeller (paddle/reverse-pitch) at max liquid level, keyed to main shaft + overflow nozzle DN"+R.DNin,"ea",1]]:[]),
+   ["15","Instrument set: LT radar, load cells "+(R.bottom==='cone'?3:4)+"×, 2× fork switches, PT flush, TT Pt100+well, pH assembly, CIP conductivity, mag flowmeter, vibration switch — all 4–20 mA HART/Profinet","lot",1],
+   ["16","Lifting lugs (4), earthing bosses (2), nameplate, insulation clips as req.","lot",1],
+   ["17","Spare gaskets & seal kit (2-year operation)","lot",1],
+  ];
+  R.boq=b;
+  $('boqres').innerHTML="<table><tr><th>Item</th><th>Description</th><th>Unit</th><th>Qty</th></tr>"+
+    b.map(r=>`<tr><td>${r[0]}</td><td class="l">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')+"</table>";
+}
+function exportCSV(){
+  const rows=[["Item","Description","Unit","Qty"],...R.boq.map(r=>[r[0],'"'+r[1].replace(/"/g,'""')+'"',r[2],r[3]])];
+  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Agitator_BOQ.csv';a.click();
+}
+
+/* ================= SVG GENERATORS — HQ ================= */
+const DEFS=`<defs>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9FB0BF"/><stop offset="0.15" stop-color="#EDF2F6"/><stop offset="0.5" stop-color="#C4D2DD"/><stop offset="0.85" stop-color="#EDF2F6"/><stop offset="1" stop-color="#8DA0B1"/></linearGradient>
+ <linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E6EDF3"/><stop offset="1" stop-color="#AABCCB"/></linearGradient>
+ <linearGradient id="shaftG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4E6A82"/><stop offset="0.5" stop-color="#8FA9BF"/><stop offset="1" stop-color="#3D566C"/></linearGradient>
+ <linearGradient id="liq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C8E7F7"/><stop offset="0.6" stop-color="#8CC3E5"/><stop offset="1" stop-color="#5C9FCC"/></linearGradient>
+ <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9DBBD4"/><stop offset="0.5" stop-color="#6E93B3"/><stop offset="1" stop-color="#49708F"/></linearGradient>
+ <radialGradient id="hubG" cx="0.35" cy="0.35" r="0.9"><stop offset="0" stop-color="#7E97AC"/><stop offset="1" stop-color="#33475A"/></radialGradient>
+ <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#DFE8EF"/><line x1="0" y1="0" x2="0" y2="7" stroke="#5A7186" stroke-width="1.1"/></pattern>
+ <marker id="ah2" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#0E86D4"/></marker>
+ <marker id="ah3" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#0B6E4F"/></marker>
+ <marker id="dm" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M1,6 L11,6 M6,2 L6,10" stroke="#8A2D0B" stroke-width="1.2"/><path d="M2,8.5 L10,3.5" stroke="#8A2D0B" stroke-width="1.2"/></marker>
+ <filter id="ds" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="#14304A" flood-opacity="0.25"/></filter>
+</defs>`;
+const dimH=(x1,x2,y,txt,above=true)=>`<g stroke="#8A2D0B" fill="none"><line x1="${x1}" y1="${y-6}" x2="${x1}" y2="${y+6}"/><line x1="${x2}" y1="${y-6}" x2="${x2}" y2="${y+6}"/><line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" marker-start="url(#dm)" marker-end="url(#dm)"/></g><text x="${(x1+x2)/2}" y="${above?y-8:y+16}" text-anchor="middle" font-size="11.5" fill="#8A2D0B">${txt}</text>`;
+const dimV=(x,y1,y2,txt,left=true)=>`<g stroke="#8A2D0B" fill="none"><line x1="${x-6}" y1="${y1}" x2="${x+6}" y2="${y1}"/><line x1="${x-6}" y1="${y2}" x2="${x+6}" y2="${y2}"/><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" marker-start="url(#dm)" marker-end="url(#dm)"/></g><text x="${x+(left?-8:8)}" y="${(y1+y2)/2}" text-anchor="middle" font-size="11.5" fill="#8A2D0B" transform="rotate(-90 ${x+(left?-8:8)} ${(y1+y2)/2})">${txt}</text>`;
+
+function tankPath(cx,top,w,h,bottom){
+  const r=w/2;
+  let d=`M${cx-r},${top} L${cx-r},${top+h} `;
+  if(bottom==='dished') d+=`C${cx-r},${top+h+0.18*w} ${cx-r*0.55},${top+h+0.25*w} ${cx},${top+h+0.25*w} C${cx+r*0.55},${top+h+0.25*w} ${cx+r},${top+h+0.18*w} ${cx+r},${top+h} `;
+  else if(bottom==='cone') d+=`L${cx},${top+h+0.5*w} L${cx+r},${top+h} `;
+  else d+=`L${cx+r},${top+h} `;
+  d+=`L${cx+r},${top} Z`;
+  return d;
+}
+function botDepth(w,bottom){return bottom==='dished'?0.25*w:bottom==='cone'?0.5*w:0;}
+
+function drawPreview(){
+  const T=+$('T').value,Hs=+$('H').value,bottom=$('bottom').value,fill=+$('fill').value/100;
+  const s=190/Math.max(T,Hs), w=T*s, h=Hs*s, cx=210, top=56, bd=botDepth(w,bottom);
+  const liqTop=top+h*(1-fill);
+  const legs=bottom!=='flat'?`<g stroke="#5A7186" stroke-width="7" opacity="0.85"><line x1="${cx-w/2+8}" y1="${top+h-4}" x2="${cx-w/2-14}" y2="${top+h+bd+26}"/><line x1="${cx+w/2-8}" y1="${top+h-4}" x2="${cx+w/2+14}" y2="${top+h+bd+26}"/><line x1="${cx}" y1="${top+h+bd}" x2="${cx}" y2="${top+h+bd+26}"/></g>`:"";
+  $('preview').innerHTML=`<svg viewBox="0 0 480 ${top+h+bd+64}" width="100%" style="max-height:420px">${DEFS}
+   ${legs}
+   <path d="${tankPath(cx,top,w,h,bottom)}" fill="url(#steel)" stroke="#41586E" stroke-width="2.5" filter="url(#ds)"/>
+   <clipPath id="pvclip"><path d="${tankPath(cx,top+2,w-5,h-2,bottom)}"/></clipPath>
+   <g clip-path="url(#pvclip)"><rect x="${cx-w/2}" y="${liqTop}" width="${w}" height="${h+bd}" fill="url(#liq)" opacity="0.9"/>
+     <ellipse cx="${cx}" cy="${liqTop}" rx="${w/2-4}" ry="5" fill="#DDF1FB" opacity="0.85"/></g>
+   <ellipse cx="${cx}" cy="${top}" rx="${w/2}" ry="7" fill="url(#steelV)" stroke="#41586E" stroke-width="2"/>
+   <rect x="${cx-16}" y="${top-46}" width="32" height="24" rx="3" fill="url(#steelV)" stroke="#41586E"/>
+   <rect x="${cx-11}" y="${top-24}" width="22" height="16" rx="2" fill="#7E97AC" stroke="#41586E"/>
+   <line x1="${cx}" y1="${top-8}" x2="${cx}" y2="${top+h*0.72}" stroke="url(#shaftG)" stroke-width="5.5"/>
+   <line x1="${cx-w*0.16}" y1="${top+h*0.72}" x2="${cx+w*0.16}" y2="${top+h*0.72}" stroke="url(#blade)" stroke-width="9" stroke-linecap="round"/>
+   <line x1="${cx-w/2+4}" y1="${liqTop}" x2="${cx+w/2-4}" y2="${liqTop}" stroke="#2E6E9E" stroke-width="1.5" stroke-dasharray="8 5"/>
+   <text x="${cx+w/2-2}" y="${liqTop-6}" font-size="10.5" fill="#2E6E9E" text-anchor="end">liquid level ${f(fill*100,0)}%</text>
+   ${dimH(cx-w/2,cx+w/2,top-24,"Ø "+f(T,2)+" m ID")}
+   ${dimV(cx+w/2+30,top,top+h,"H "+f(Hs,2)+" m",false)}
+   ${bottom!=='flat'?dimV(cx-w/2-30,top+h,top+h+bd,(bottom==='cone'?'cone':'dished')+" "+f(bd/s,2)+" m"):""}
+  </svg>`;
+}
+
+function impIso(k){
+  // returns SVG group markup of a pseudo-3D isometric impeller, centered ~(0,0), fits in ~[-110..110, -95..115]
+  const P=(t,rx,ry,cy=0)=>[rx*Math.cos(t*Math.PI/180), cy+ry*Math.sin(t*Math.PI/180)];
+  const shaft=(top=-92,bot=-14)=>`<rect x="-7" y="${top}" width="14" height="${bot-top}" fill="url(#shaftG)"/><ellipse cx="0" cy="${top}" rx="7" ry="2.6" fill="#8FA9BF"/>`;
+  const hub=(cy=0,r=17,h=22)=>`<path d="M${-r},${cy-h/2} L${-r},${cy+h/2} A${r},${r*0.36} 0 0 0 ${r},${cy+h/2} L${r},${cy-h/2}" fill="url(#hubG)"/><ellipse cx="0" cy="${cy-h/2}" rx="${r}" ry="${r*0.36}" fill="#7E97AC" stroke="#33475A" stroke-width="1"/><ellipse cx="0" cy="${cy-h/2}" rx="${r*0.4}" ry="${r*0.15}" fill="#22384C"/>`;
+  const rot=`<path d="M ${P(150,96,34)[0]},${P(150,96,34)[1]-58} A 96 34 0 0 0 ${P(30,96,34)[0]},${P(30,96,34)[1]-58}" fill="none" stroke="#0E86D4" stroke-width="2.2" marker-end="url(#ah2)"/><text x="${P(20,104,38)[0]}" y="${P(20,104,38)[1]-60}" font-size="12" fill="#0E86D4">ω</text>`;
+  if(k==='hydrofoil'||k==='pbt'){
+    const n=k==='hydrofoil'?3:4, rx=92, ry=33;
+    const blades=[];
+    for(let i=0;i<n;i++){
+      const t0=90+i*360/n;
+      const [x1,y1]=P(t0-16,rx,ry), [x2,y2]=P(t0+16,rx,ry), [hx1,hy1]=P(t0-38,17,6.5), [hx2,hy2]=P(t0+38,17,6.5);
+      const lift=k==='hydrofoil'?10:16, back=Math.sin(t0*Math.PI/180)<0;
+      const path=k==='hydrofoil'
+        ?`M${hx1},${hy1} C${x1*0.55},${y1*0.55-lift*0.6} ${x1},${y1-lift} ${x1},${y1-lift*0.4} L${x2},${y2+2} C${x2*0.5},${y2*0.5+3} ${hx2*1.2},${hy2*1.2+2} ${hx2},${hy2} Z`
+        :`M${hx1},${hy1} L${x1},${y1-lift} L${x2},${y2-lift*0.15} L${hx2},${hy2+4} Z`;
+      blades.push({back, svg:`<path d="${path}" fill="url(#blade)" stroke="#33475A" stroke-width="1.3" opacity="${back?0.72:1}" ${back?'':'filter="url(#ds)"'}/>`+
+        (back?'':`<path d="M${hx1},${hy1} C${x1*0.55},${y1*0.55-lift*0.6} ${x1},${y1-lift} ${x1},${y1-lift*0.4}" fill="none" stroke="#D6E5F0" stroke-width="1.6" opacity="0.85"/>`)});
+    }
+    return `<ellipse cx="0" cy="0" rx="${rx}" ry="${ry}" fill="none" stroke="#B9CBD9" stroke-width="1" stroke-dasharray="5 5"/>`+
+      blades.filter(b=>b.back).map(b=>b.svg).join('')+shaft()+hub()+blades.filter(b=>!b.back).map(b=>b.svg).join('')+rot+
+      (k==='pbt'?`<text x="52" y="46" font-size="10.5" fill="#8A2D0B">blade pitch 45°</text>`:`<text x="46" y="46" font-size="10.5" fill="#8A2D0B">cambered airfoil section</text>`);
+  }
+  if(k==='rushton'){
+    const rx=88, ry=30, bh=26;
+    let back='',front='';
+    for(let i=0;i<6;i++){
+      const t=90+i*60, [x,y]=P(t,rx*0.86,ry*0.86), isBack=Math.sin(t*Math.PI/180)<0;
+      const b=`<g transform="translate(${x},${y})"><rect x="-11" y="${-bh/2}" width="22" height="${bh}" fill="url(#blade)" stroke="#33475A" stroke-width="1.3" opacity="${isBack?0.65:1}" ${isBack?'':'filter="url(#ds)"'}/><rect x="-11" y="${-bh/2}" width="5" height="${bh}" fill="#FFFFFF" opacity="${isBack?0.06:0.16}"/></g>`;
+      isBack?back+=b:front+=b;
+    }
+    return back+
+     `<ellipse cx="0" cy="4" rx="${rx}" ry="${ry}" fill="#8DA4B8" stroke="#33475A"/><ellipse cx="0" cy="0" rx="${rx}" ry="${ry}" fill="url(#steel)" stroke="#33475A" stroke-width="1.4"/>`+
+     shaft()+hub(-2)+front+rot+`<text x="40" y="58" font-size="10.5" fill="#8A2D0B">disc + 6 flat blades</text>`;
+  }
+  if(k==='sawtooth'){
+    const rx=90, ry=31; let teeth='';
+    for(let i=0;i<18;i++){const t=i*20,[x,y]=P(t,rx,ry);const up=i%2===0?-12:12;
+      teeth+=`<path d="M${x},${y} L${P(t+6,rx*1.1,ry*1.1)[0]},${P(t+6,rx*1.1,ry*1.1)[1]+up} L${P(t+11,rx,ry)[0]},${P(t+11,rx,ry)[1]} Z" fill="${Math.sin(t*Math.PI/180)<0?'#4E6A82':'#33475A'}"/>`;}
+    return `<ellipse cx="0" cy="4" rx="${rx}" ry="${ry}" fill="#7E97AC" stroke="#33475A"/><ellipse cx="0" cy="0" rx="${rx}" ry="${ry}" fill="url(#steel)" stroke="#33475A" stroke-width="1.4"/>${teeth}
+     <ellipse cx="0" cy="0" rx="${rx*0.55}" ry="${ry*0.55}" fill="none" stroke="#D6E5F0" stroke-width="1" opacity="0.7"/>`+shaft()+hub(-2)+rot+
+     `<text x="34" y="58" font-size="10.5" fill="#8A2D0B">alternating teeth — high shear rim</text>`;
+  }
+  if(k==='anchor'){
+    return `<path d="M-88,-88 L-88,30 Q-88,84 0,88 Q88,84 88,30 L88,-88" fill="none" stroke="#123B63" stroke-width="1.4" stroke-dasharray="7 5"/>
+     <text x="-86" y="-96" font-size="9.5" fill="#123B63">tank wall (clearance ${f(0.025*R.T*1000,0)} mm)</text>
+     <path d="M-74,-80 L-74,26 Q-74,70 0,74 Q74,70 74,26 L74,-80" fill="none" stroke="#33475A" stroke-width="17" stroke-linecap="round"/>
+     <path d="M-74,-80 L-74,26 Q-74,70 0,74 Q74,70 74,26 L74,-80" fill="none" stroke="url(#blade)" stroke-width="13" stroke-linecap="round"/>
+     <path d="M-77,-80 L-77,26 Q-77,68 -6,73" fill="none" stroke="#D6E5F0" stroke-width="2" opacity="0.7"/>
+     <line x1="-74" y1="-26" x2="74" y2="-26" stroke="url(#blade)" stroke-width="10"/>
+     <rect x="-8" y="-96" width="16" height="150" fill="url(#shaftG)"/><ellipse cx="0" cy="-96" rx="8" ry="3" fill="#8FA9BF"/>
+     <text x="16" y="-40" font-size="10.5" fill="#8A2D0B">cross-arm stiffener</text>`;
+  }
+  // ribbon — double helix front elevation
+  let bands='';
+  const H2=170, turns=2.5, W2=76;
+  for(let hix=0;hix<2;hix++){
+    for(let i=0;i<turns*2;i++){
+      const y0=-85+i*(H2/(turns*2)), y1=y0+H2/(turns*2);
+      const goRight=(i+hix)%2===0, front2=(i+hix)%2===0;
+      const xA=goRight?-W2:W2, xB=goRight?W2:-W2;
+      bands+=`<path d="M${xA},${y0} C${xA*0.2},${y0+6} ${xB*0.2},${y1-6} ${xB},${y1} L${xB},${y1-11} C${xB*0.2},${y1-17} ${xA*0.2},${y0-5} ${xA},${y0-11} Z"
+        fill="url(#blade)" stroke="#33475A" stroke-width="1" opacity="${front2?1:0.55}" ${front2?'filter="url(#ds)"':''}/>`;
+    }
+  }
+  return `<rect x="-7" y="-100" width="14" height="200" fill="url(#shaftG)"/>`+bands+
+   `<line x1="-76" y1="-96" x2="-76" y2="-28" stroke="#8A2D0B" marker-start="url(#dm)" marker-end="url(#dm)"/><text x="-92" y="-58" font-size="10.5" fill="#8A2D0B" transform="rotate(-90 -92 -58)">pitch t = d</text>
+   <text x="30" y="108" font-size="10.5" fill="#8A2D0B">2 flights, close clearance</text>`;
+}
+function drawImp(){
+  const reasons={
+    hydrofoil:R.mu>1?"stalls — cannot pump viscous fluid at low Re":"lower goal-fit score than selected",
+    pbt:R.key==='hydrofoil'?"4.5× higher Np for same blend duty":"lower weighted score for this duty",
+    rushton:R.goal==='susp_h'?"—":"Np 5.0 — energy-inefficient unless gas dispersion is required",
+    sawtooth:"high shear but almost no pumping — dispersion niche only",
+    anchor:R.mu<5?"close-clearance unjustified below ~5,000 cP":"good wall sweep but weak axial turnover vs ribbon",
+    ribbon:R.mu<50?"reserved for laminar duty > 50,000 cP":"—"};
+  $('impsvg').innerHTML=`<svg viewBox="0 0 480 300" width="100%" style="max-height:330px">${DEFS}
+    <rect x="8" y="8" width="464" height="284" rx="10" fill="#FBFDFE" stroke="var(--line)"/>
+    <g transform="translate(240,148) scale(1.06)">${impIso(R.key)}</g>
+    ${dimH(240-100,240+100,272,"D = "+f(R.D*1000,0)+" mm ("+f(R.D/R.T,2)+"·T)")}
+    <text x="20" y="30" font-size="13" font-weight="bold" fill="var(--ink)">${R.imp.name}</text>
+    <text x="20" y="46" font-size="10.5" fill="var(--ink2)">${R.nImp}× · ${f(R.Nrpm,0)} rpm · tip ${f(R.tip,1)} m/s · isometric view</text></svg>`;
+  const altKeys=Object.keys(IMPELLERS).filter(k=>k!==R.key).slice(0,3);
+  $('alts').innerHTML="<h3>Rejected alternatives</h3><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px'>"+
+   altKeys.map(k=>`<div style="border:1px solid var(--line);border-radius:8px;padding:6px;background:#FBFDFE">
+     <svg viewBox="-120 -115 240 245" width="100%" style="max-height:120px">${DEFS}<g transform="scale(0.86)">${impIso(k)}</g></svg>
+     <div style="font-size:11px;font-weight:700;color:var(--ink)">${IMPELLERS[k].name.split('(')[0]}</div>
+     <div style="font-size:10px;color:var(--ink2)">Np ${IMPELLERS[k].Np||'~30 (lam)'} — ${reasons[k]}</div></div>`).join('')+"</div>";
+}
+function drawFlow(){
+  const s=230/Math.max(R.T,R.Z+0.3);
+  const w=R.T*s, h=R.Z*s, cx=270, top=52, bot=top+h, bd=botDepth(w,R.bottom);
+  const D=R.D*s, impY=bot-R.C*s;
+  let loops='', note='';
+  const stream=(d,dur,op,sw)=>`<path d="${d}" fill="none" stroke="#0E86D4" stroke-width="${sw||3}" opacity="${op||0.9}" marker-end="url(#ah2)" stroke-dasharray="11 7"><animate attributeName="stroke-dashoffset" from="72" to="0" dur="${dur}s" repeatCount="indefinite"/></path>
+   <circle r="3.2" fill="#FFFFFF" stroke="#0E86D4" stroke-width="1.4"><animateMotion dur="${dur*2.2}s" repeatCount="indefinite" path="${d}"/></circle>`;
+  if(R.imp.flow==='axial'){
+    note="Axial pattern: impeller pumps downward; the jet turns at the bottom head and returns up the wall — one large top-to-bottom loop per side plus an inner secondary loop. Best turnover per watt; the 4 wall baffles (shown) convert swirl into vertical flow.";
+    loops=[[-1],[1]].map(([m])=>
+      stream(`M${cx+m*12},${impY-4} C${cx+m*12},${bot+bd*0.7} ${cx+m*w/2*0.92},${bot+bd*0.35} ${cx+m*w/2*0.86},${impY-h*0.22} C${cx+m*w/2*0.8},${top+22} ${cx+m*20},${top+18} ${cx+m*13},${impY-18}`,1.6)+
+      stream(`M${cx+m*7},${impY-2} C${cx+m*7},${bot+bd*0.35} ${cx+m*w/2*0.55},${bot} ${cx+m*w/2*0.5},${impY-h*0.3} C${cx+m*w/2*0.45},${top+h*0.28} ${cx+m*12},${top+h*0.3} ${cx+m*8},${impY-14}`,2.1,0.55,2.2)).join('');
+  }else if(R.imp.flow==='radial'){
+    note="Radial pattern: the disc turbine discharges a high-shear jet to the wall which splits into an upper and a lower loop on each side — four circulation cells. Inter-zone exchange between upper and lower cells is the limiting mechanism for blend time.";
+    loops=[[-1,-1],[-1,1],[1,-1],[1,1]].map(([m,v])=>
+      stream(`M${cx+m*D/2},${impY+v*2} C${cx+m*w/2*0.78},${impY+v*4} ${cx+m*w/2*0.88},${impY+v*h*0.3} ${cx+m*w/2*0.6},${impY+v*h*0.36} C${cx+m*22},${impY+v*h*0.38} ${cx+m*16},${impY+v*12} ${cx+m*D/2*0.72},${impY+v*7}`,1.7)).join('');
+  }else if(R.imp.flow==='mixed'){
+    note="Mixed axial/radial pattern (pitched blades): dominant 45° downward jet, wall return upward, with a secondary radial cell at the impeller plane — good compromise for suspension plus blending.";
+    loops=[[-1],[1]].map(([m])=>
+      stream(`M${cx+m*D/3},${impY} C${cx+m*w/2*0.72},${impY+h*0.12} ${cx+m*w/2*0.92},${bot+bd*0.3} ${cx+m*w/2*0.86},${impY-h*0.26} C${cx+m*w/2*0.8},${top+22} ${cx+m*18},${top+18} ${cx+m*13},${impY-16}`,1.7)+
+      stream(`M${cx+m*D/2},${impY-2} C${cx+m*w/2*0.7},${impY-6} ${cx+m*w/2*0.72},${impY-h*0.16} ${cx+m*w/2*0.5},${impY-h*0.18} C${cx+m*24},${impY-h*0.2} ${cx+m*18},${impY-10} ${cx+m*D/2*0.75},${impY-6}`,2.2,0.55,2.2)).join('');
+  }else{
+    note="Close-clearance laminar pattern: the ribbon/anchor drags the fluid tangentially at the wall while the helix pitch superimposes a slow axial turnover — up at the wall, down along the shaft (Bortnikov 1973; Ameur 2018). No baffles are used in laminar duty.";
+    loops=[[-1],[1]].map(([m])=>
+      stream(`M${cx+m*w/2*0.86},${bot-12} C${cx+m*w/2*0.96},${impY-h*0.42} ${cx+m*w/2*0.82},${top+28} ${cx+m*24},${top+22} C${cx+m*10},${top+44} ${cx+m*10},${bot-46} ${cx+m*w/2*0.56},${bot-10}`,2.6)).join('');
+  }
+  let imps='';
+  if(R.laminarType){
+    imps=`<path d="M${cx-w/2*0.9},${top+18} C${cx+w/2*0.62},${top+h*0.3} ${cx-w/2*0.62},${top+h*0.62} ${cx+w/2*0.9},${bot-10}" fill="none" stroke="url(#blade)" stroke-width="8" stroke-linecap="round"/><path d="M${cx+w/2*0.9},${top+18} C${cx-w/2*0.62},${top+h*0.3} ${cx+w/2*0.62},${top+h*0.62} ${cx-w/2*0.9},${bot-10}" fill="none" stroke="url(#blade)" stroke-width="8" stroke-linecap="round" opacity="0.9"/>`;
+  }else{
+    for(let i=0;i<R.nImp;i++){const y=impY-i*1.2*D;
+      imps+=`<g filter="url(#ds)"><path d="M${cx-D/2},${y} L${cx-8},${y-5} L${cx+8},${y+5} L${cx+D/2},${y}" fill="none" stroke="url(#blade)" stroke-width="9" stroke-linecap="round"/><circle cx="${cx}" cy="${y}" r="7" fill="url(#hubG)"/></g>`;}
+    imps+=`<g stroke="#41586E" stroke-width="5" opacity="0.8"><line x1="${cx-w/2+7}" y1="${top+10}" x2="${cx-w/2+7}" y2="${bot-8}"/><line x1="${cx+w/2-7}" y1="${top+10}" x2="${cx+w/2-7}" y2="${bot-8}"/></g>`;
+  }
+  const legend=`<g transform="translate(30,${top+8})"><text x="0" y="-8" font-size="10.5" fill="var(--ink2)">velocity</text>
+   <linearGradient id="vleg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2B4C6F"/><stop offset="0.5" stop-color="#0E86D4"/><stop offset="1" stop-color="#7FD4A9"/></linearGradient>
+   <rect width="12" height="120" fill="url(#vleg)" stroke="#41586E"/><text x="17" y="10" font-size="9.5" fill="var(--ink2)">high (tip ${f(R.tip,1)} m/s)</text><text x="17" y="118" font-size="9.5" fill="var(--ink2)">low</text></g>`;
+  $('flowsvg').innerHTML=`<svg viewBox="0 0 560 ${bot+bd+56}" width="100%" style="max-height:520px">${DEFS}
+   <path d="${tankPath(cx,top,w,h,R.bottom)}" fill="url(#steel)" stroke="#41586E" stroke-width="3"/>
+   <clipPath id="flclip"><path d="${tankPath(cx,top+2,w-6,h-2,R.bottom)}"/></clipPath>
+   <g clip-path="url(#flclip)"><rect x="${cx-w/2}" y="${top+6}" width="${w}" height="${h+bd}" fill="url(#liq)" opacity="0.55"/></g>
+   <path d="M${cx-w/2+4},${top+8} Q${cx},${top+(R.regime==='Turbulent'?22:10)} ${cx+w/2-4},${top+8}" fill="none" stroke="#2E6E9E" stroke-width="2"/>
+   <line x1="${cx}" y1="${top-18}" x2="${cx}" y2="${R.laminarType?bot-10:impY}" stroke="url(#shaftG)" stroke-width="6"/>
+   ${imps}${loops}${legend}
+   <text x="30" y="30" font-size="12.5" fill="var(--ink)" font-weight="bold">${R.imp.name}</text>
+   <text x="30" y="45" font-size="11" fill="var(--ink2)">${f(R.Nrpm,0)} rpm · Re = ${f(R.Re,0)} (${R.regime}) · ${R.nImp}× Ø${f(R.D,2)} m</text></svg>`;
+  $('flownote').textContent=note;
+}
+
+function drawFab(){
+  const LOGO=(document.querySelector('header img')||{}).src||'';
+  const s=330/Math.max(R.T,R.Hs+0.3*R.T);
+  const w=R.T*s,h=R.Hs*s,cx=300,top=130,bot=top+h,bd=botDepth(w,R.bottom);
+  const D=R.D*s,impY=bot-R.C*s,liqY=top+h*(1-(+$('fill').value/100));
+  const SW=980,SH=Math.max(bot+bd+230,760),th=5;
+  // grid border refs
+  let border=`<rect x="6" y="6" width="${SW-12}" height="${SH-12}" fill="none" stroke="#123B63" stroke-width="2"/><rect x="18" y="18" width="${SW-36}" height="${SH-36}" fill="none" stroke="#123B63" stroke-width="1"/>`;
+  for(let i=0;i<8;i++){const x=18+(SW-36)*i/8;border+=`<line x1="${x}" y1="6" x2="${x}" y2="18" stroke="#123B63"/><line x1="${x}" y1="${SH-18}" x2="${x}" y2="${SH-6}" stroke="#123B63"/><text x="${x+(SW-36)/16}" y="15" font-size="9" text-anchor="middle" fill="#123B63">${i+1}</text><text x="${x+(SW-36)/16}" y="${SH-9}" font-size="9" text-anchor="middle" fill="#123B63">${i+1}</text>`;}
+  "ABCDEF".split("").forEach((L,i)=>{const y=18+(SH-36)*i/6;border+=`<line x1="6" y1="${y}" x2="18" y2="${y}" stroke="#123B63"/><line x1="${SW-18}" y1="${y}" x2="${SW-6}" y2="${y}" stroke="#123B63"/><text x="12" y="${y+(SH-36)/12}" font-size="9" text-anchor="middle" fill="#123B63">${L}</text><text x="${SW-12}" y="${y+(SH-36)/12}" font-size="9" text-anchor="middle" fill="#123B63">${L}</text>`;});
+  // shell double wall with hatch section
+  const shell=`<path d="${tankPath(cx,top,w,h,R.bottom)}" fill="none" stroke="#123B63" stroke-width="2.2"/>
+   <path d="${tankPath(cx,top+th,w-2*th,h-th,R.bottom)}" fill="none" stroke="#123B63" stroke-width="1.2"/>
+   <g stroke="#123B63" stroke-width="1"><path d="${tankPath(cx,top,w,h,R.bottom)}" fill="url(#hatch)" opacity="0.5" clip-path="url(#wall)"/></g>
+   <clipPath id="wall"><path d="${tankPath(cx,top,w,h,R.bottom)}" fill-rule="evenodd"/></clipPath>`;
+  // centerline
+  const cl=`<line x1="${cx}" y1="${top-96}" x2="${cx}" y2="${bot+bd+26}" stroke="#8A2D0B" stroke-width="0.9" stroke-dasharray="16 5 3 5"/>`;
+  // drive
+  const drive=`<g filter="url(#ds)"><rect x="${cx-30}" y="${top-92}" width="60" height="38" rx="4" fill="url(#steelV)" stroke="#123B63" stroke-width="1.5"/>
+   ${[0,1,2,3].map(i=>`<line x1="${cx-24+i*16}" y1="${top-88}" x2="${cx-24+i*16}" y2="${top-58}" stroke="#9FB0BF"/>`).join('')}
+   <rect x="${cx-20}" y="${top-54}" width="40" height="28" rx="3" fill="#C4D2DD" stroke="#123B63" stroke-width="1.5"/>
+   <rect x="${cx-44}" y="${top-26}" width="88" height="9" fill="url(#steelV)" stroke="#123B63"/>
+   ${[-34,-17,0,17,34].map(x=>`<line x1="${cx+x}" y1="${top-26}" x2="${cx+x}" y2="${top-17}" stroke="#123B63"/>`).join('')}</g>
+   <text x="${cx+52}" y="${top-70}" font-size="11" fill="#123B63">${R.Pmot} kW · 4P · i = ${f(R.ratio,1)}</text>
+   <text x="${cx+52}" y="${top-56}" font-size="10" fill="#3E5A75">${R.gtype.split('(')[0]}</text>
+   <text x="${cx+50}" y="${top-20}" font-size="10" fill="#123B63">${R.flangeDN} · ${R.bolts}×M20</text>`;
+  // internals
+  let internals=`<line x1="${cx}" y1="${top-14}" x2="${cx}" y2="${R.laminarType?bot-12:impY}" stroke="url(#shaftG)" stroke-width="7"/><text x="${cx+9}" y="${(top+impY)/2}" font-size="10" fill="#123B63">Ø${R.dStd} shaft</text>`;
+  if(R.laminarType){
+    internals+=`<path d="M${cx-w/2*0.88},${top+22} C${cx+w/2*0.6},${top+h*0.32} ${cx-w/2*0.6},${top+h*0.64} ${cx+w/2*0.88},${bot-12}" fill="none" stroke="url(#blade)" stroke-width="7"/><path d="M${cx+w/2*0.88},${top+22} C${cx-w/2*0.6},${top+h*0.32} ${cx+w/2*0.6},${top+h*0.64} ${cx-w/2*0.88},${bot-12}" fill="none" stroke="url(#blade)" stroke-width="7" opacity="0.9"/>`;
+  }else{
+    for(let i=0;i<R.nImp;i++){const y=impY-i*1.2*D;
+      internals+=`<path d="M${cx-D/2},${y} L${cx-9},${y-5} L${cx+9},${y+5} L${cx+D/2},${y}" fill="none" stroke="url(#blade)" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${y}" r="6.5" fill="url(#hubG)"/>`;}
+    internals+=`<g stroke="#123B63" stroke-width="4"><line x1="${cx-w/2+9}" y1="${top+14}" x2="${cx-w/2+9}" y2="${bot-10}"/><line x1="${cx+w/2-9}" y1="${top+14}" x2="${cx+w/2-9}" y2="${bot-10}"/></g><text x="${cx+w/2-64}" y="${top+30}" font-size="10" fill="#123B63">4× baffles W=${f(R.T/12*1000,0)} mm</text>`;
+    if(window._foaming) internals+=`<line x1="${cx-D/2*0.6}" y1="${liqY-12}" x2="${cx+D/2*0.6}" y2="${liqY-12}" stroke="url(#blade)" stroke-width="7" stroke-linecap="round"/><text x="${cx+D/2*0.6+6}" y="${liqY-9}" font-size="10" fill="#123B63">foam breaker</text>`;
+  }
+  // liquid level
+  internals+=`<line x1="${cx-w/2+th}" y1="${liqY}" x2="${cx+w/2-th}" y2="${liqY}" stroke="#2E6E9E" stroke-width="1.4" stroke-dasharray="10 5"/><text x="${cx-w/2+12}" y="${liqY-5}" font-size="9.5" fill="#2E6E9E">max liquid level</text>`;
+  // nozzles with callout balloons
+  const noz=(x,y,dx,dy,lab,n)=>`<line x1="${x}" y1="${y}" x2="${x+dx}" y2="${y+dy}" stroke="#123B63" stroke-width="5.5"/><circle cx="${x+dx*1.55}" cy="${y+dy*1.55}" r="11" fill="#fff" stroke="#123B63" stroke-width="1.4"/><text x="${x+dx*1.55}" y="${y+dy*1.55+3.5}" font-size="10" text-anchor="middle" fill="#123B63">N${n}</text><text x="${x+dx*1.55+14}" y="${y+dy*1.55+4}" font-size="10" fill="#123B63">${lab}</text>`;
+  const outY=bot+bd;
+  const nozzles=
+   noz(cx-w/2,top+42,-26,0,"",1)+`<text x="${cx-w/2-118}" y="${top+46}" font-size="10" fill="#123B63">N1 inlet DN${R.DNin}</text>`+
+   noz(cx,outY,0,26,"outlet DN"+R.DNout,2)+
+   noz(cx+w/2,top+26,26,0,"vent DN"+R.DNvent,3)+
+   `<g>${Array.from({length:R.nBalls},(_,i)=>{const bx=cx+(i%2?1:-1)*0.24*w*(1+Math.floor(i/2)*0.55);
+     return `<line x1="${bx}" y1="${top-40}" x2="${bx}" y2="${top+26}" stroke="#123B63" stroke-width="2"/><circle cx="${bx}" cy="${top+32}" r="7" fill="none" stroke="#123B63" stroke-width="2"/><circle cx="${bx}" cy="${top+32}" r="2.4" fill="#123B63"/><text x="${bx-10}" y="${top-46}" font-size="9.5" fill="#123B63">N4.${i+1} CIP</text>`;}).join('')}</g>`+
+   `<ellipse cx="${cx+w/2*0.55}" cy="${top-2}" rx="26" ry="8" fill="none" stroke="#123B63" stroke-width="2"/><text x="${cx+w/2*0.55-24}" y="${top-14}" font-size="10" fill="#123B63">N5 manway DN500</text>`;
+  // dimensions
+  const dims=
+   dimH(cx-w/2,cx+w/2,top-104,"Ø "+f(R.T*1000,0)+" mm ID")+
+   dimV(cx+w/2+58,top,bot,"H "+f(R.Hs*1000,0)+" mm",false)+
+   dimV(cx+w/2+96,top,outY,"overall "+f((R.Hs+bd/s)*1000,0)+" mm",false)+
+   dimV(cx-w/2-52,impY,bot,"C "+f(R.C*1000,0)+" mm")+
+   dimH(cx-D/2,cx+D/2,impY+26,"D "+f(R.D*1000,0)+" mm",false)+
+   (bd?dimV(cx-w/2-90,top+h,outY,(R.bottom==='cone'?"cone ":"dish ")+f(bd/s*1000,0)+" mm"):"")+
+   dimV(cx-w/2-52,liqY,impY,"—",true).replace('>—<','>'+f((impY-liqY)/s*1000,0)+' mm<');
+  // nozzle schedule + notes
+  const sched=`<g transform="translate(${SW-360},40)"><rect width="330" height="188" fill="#F7FAFC" stroke="#123B63"/>
+   <text x="10" y="18" font-size="11.5" font-weight="bold" fill="#123B63">NOZZLE SCHEDULE</text>
+   ${["N1|Inlet + dip pipe|DN"+R.DNin+(R.hyg?" TC":" PN16"),"N2|Bottom outlet|DN"+R.DNout+(R.hyg?" + ZDL valve":""),"N3|Vent|DN"+R.DNvent,"N4|CIP spray ×"+R.nBalls+"|DN"+R.cipConn+" TC","N5|Manway|DN500","N6|Level radar|DN"+(R.hyg?50:80),"N7|Instr. (PT/TT/pH/LS)|DN25×4","N8|Overflow"+(window._foaming?" (foam)":"")+"|DN"+R.DNin].map((r,i)=>{const c=r.split("|");
+     return `<text x="10" y="${38+i*18}" font-size="10" fill="#123B63">${c[0]}</text><text x="46" y="${38+i*18}" font-size="10" fill="#123B63">${c[1]}</text><text x="216" y="${38+i*18}" font-size="10" fill="#123B63">${c[2]}</text><line x1="6" y1="${43+i*18}" x2="324" y2="${43+i*18}" stroke="#D5E0E9"/>`;}).join('')}</g>`;
+  const notes=`<g transform="translate(40,${SH-190})"><text x="0" y="0" font-size="11.5" font-weight="bold" fill="#123B63">NOTES</text>
+   ${["1. Material: "+R.mat+", internal Ra ≤ 0.8 µm"+(R.hyg?" (hygienic polish), external Ra ≤ 1.2 µm":""),
+      "2. Dimensions in mm. Tolerances per DIN ISO 2768-mK unless noted.",
+      "3. Welds: full penetration, internal welds ground flush & passivated per ASTM A380.",
+      "4. Agitator nozzle per DIN 28137-2 with doubler pad; verify head loads M="+f(R.M,0)+" N·m, F="+f(R.Fh+R.PaxN,0)+" N.",
+      "5. Baffles "+(R.laminarType?"not required (close-clearance impeller).":"4× W="+f(R.T/12*1000,0)+" mm, offset "+f(R.T/60*1000,0)+" mm from wall."),
+      "6. Design per EN 13445 / ASME VIII Div.1 as applicable — this GA is preliminary for fabrication pricing."].map((t,i)=>`<text x="0" y="${16+i*15}" font-size="10" fill="#123B63">${t}</text>`).join('')}</g>`;
+  const tblock=`<g transform="translate(${SW-380},${SH-150})"><rect width="352" height="118" fill="#F7FAFC" stroke="#123B63" stroke-width="1.5"/>
+   ${LOGO?`<image href="${LOGO}" x="10" y="10" width="94" height="46"/>`:""}
+   <line x1="114" y1="6" x2="114" y2="60" stroke="#123B63"/>
+   <text x="122" y="22" font-size="11.5" font-weight="bold" fill="#123B63">PROJECTS DEP. SELECTION TOOL</text>
+   <text x="122" y="38" font-size="10" fill="#123B63">GENERAL ARRANGEMENT — AGITATED TANK</text>
+   <text x="122" y="53" font-size="10" fill="#123B63">${R.imp.name} · ${R.nImp}× Ø${f(R.D,2)} m</text>
+   <line x1="6" y1="64" x2="346" y2="64" stroke="#123B63"/>
+   <text x="10" y="80" font-size="9.5" fill="#123B63">Drawn: Eng. Mohamed Raafat — Projects Department</text>
+   <text x="10" y="94" font-size="9.5" fill="#123B63">${f(R.Pkw,1)} kW @ ${f(R.Nrpm,0)} rpm · V=${f(R.V,1)} m³ · ${R.mat}</text>
+   <text x="10" y="108" font-size="9" fill="#7C93A6">Scale NTS · First angle · DO NOT SCALE DRAWING</text>
+   <text x="250" y="80" font-size="9.5" fill="#123B63">Sheet 1 of 1</text><text x="250" y="94" font-size="9.5" fill="#123B63">Rev 2.4</text></g>`;
+  $('fabdraw').innerHTML=`<svg viewBox="0 0 ${SW} ${SH}" width="100%">${DEFS}
+   <rect width="${SW}" height="${SH}" fill="#FFFFFF"/>
+   ${border}${cl}${shell}${drive}${internals}${nozzles}${dims}${sched}${notes}${tblock}</svg>`;
+}
+
+function drawCIP(){
+  const r=150,cx=225,cy=195;
+  const angles=Array.from({length:R.nBalls},(_,i)=>i*(R.nBalls===2?180:R.nBalls===3?120:90)-90);
+  const balls=angles.map((adeg,i)=>{
+    const a=adeg*Math.PI/180, br=0.5*r, bx=cx+br*Math.cos(a), by=cy+br*Math.sin(a);
+    // shadow wedge cast by shaft from this ball
+    const sa=Math.atan2(cy-by,cx-bx);
+    const wedge=`<path d="M${cx},${cy} L${cx+r*Math.cos(sa-0.16)},${cy+r*Math.sin(sa-0.16)} A${r},${r} 0 0 1 ${cx+r*Math.cos(sa+0.16)},${cy+r*Math.sin(sa+0.16)} Z" fill="#C6410F" opacity="0.10"/>`;
+    return `<circle cx="${bx}" cy="${by}" r="${r*0.72}" fill="#0E86D4" opacity="0.10"/>
+     <circle cx="${bx}" cy="${by}" r="${r*0.72}" fill="none" stroke="#0E86D4" stroke-width="1.2" stroke-dasharray="5 5"/>
+     ${wedge}
+     ${Array.from({length:12},(_,k)=>{const ja=k/12*2*Math.PI;return `<line x1="${bx}" y1="${by}" x2="${bx+16*Math.cos(ja)}" y2="${by+16*Math.sin(ja)}" stroke="#0E86D4" stroke-width="1.6"><animate attributeName="opacity" values="1;0.25;1" dur="1.6s" begin="${k*0.13}s" repeatCount="indefinite"/></line>`;}).join('')}
+     <circle cx="${bx}" cy="${by}" r="8" fill="url(#hubG)" stroke="#0E86D4" stroke-width="2"/>
+     <text x="${bx+13}" y="${by+4}" font-size="11" font-weight="bold" fill="#123B63">CIP${i+1} @ ${adeg+90}°</text>`;}).join('');
+  $('cipsvg').innerHTML=`<svg viewBox="0 0 460 400" width="100%" style="max-height:400px">${DEFS}
+   <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#liq)" opacity="0.25"/>
+   <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#123B63" stroke-width="3"/>
+   <circle cx="${cx}" cy="${cy}" r="${r-6}" fill="none" stroke="#123B63" stroke-width="1"/>
+   <line x1="${cx-r-12}" y1="${cy}" x2="${cx+r+12}" y2="${cy}" stroke="#8A2D0B" stroke-width="0.8" stroke-dasharray="14 5 3 5"/>
+   <line x1="${cx}" y1="${cy-r-12}" x2="${cx}" y2="${cy+r+12}" stroke="#8A2D0B" stroke-width="0.8" stroke-dasharray="14 5 3 5"/>
+   <circle cx="${cx}" cy="${cy}" r="${0.5*r}" fill="none" stroke="#8A2D0B" stroke-width="1" stroke-dasharray="6 5"/>
+   <text x="${cx+0.5*r*0.72}" y="${cy+0.5*r*0.75}" font-size="10" fill="#8A2D0B">PCD ${f(0.5*R.T,2)} m</text>
+   <circle cx="${cx}" cy="${cy}" r="10" fill="url(#hubG)"/><text x="${cx+14}" y="${cy-8}" font-size="10.5" fill="var(--ink2)">agitator shaft</text>
+   <ellipse cx="${cx+r*0.62}" cy="${cy-r*0.55}" rx="24" ry="17" fill="none" stroke="#123B63" stroke-width="2"/><text x="${cx+r*0.62-20}" y="${cy-r*0.55-22}" font-size="10" fill="#123B63">manway</text>
+   ${balls}
+   <g transform="translate(20,336)"><rect width="420" height="52" fill="#F7FAFC" stroke="var(--line)"/>
+    <circle cx="16" cy="14" r="6" fill="#0E86D4" opacity="0.25"/><text x="28" y="18" font-size="10">wetted coverage zone per device (${f(R.Qcip/R.nBalls,0)} L/min each)</text>
+    <rect x="228" y="8" width="12" height="12" fill="#C6410F" opacity="0.2"/><text x="246" y="18" font-size="10">spray shadow behind shaft → covered by opposite device</text>
+    <text x="28" y="40" font-size="10">${R.nBalls}× ${R.ballType.split(',')[0]} · lowest point ≥150 mm above max liquid level · validate by riboflavin test</text></g>
+   <text x="20" y="24" font-size="12" font-weight="bold" fill="var(--ink)">Top head plan — CIP coverage & shadow study</text></svg>`;
+}
+
+/* ============ V2.0 — MATERIALS, RECIPE, LIBRARY, PUMPS ============ */
+const GHS={COR:["GHS05","Corrosive"],FLAM:["GHS02","Flammable"],OX:["GHS03","Oxidizer"],TOX:["GHS06","Acute toxic"],IRR:["GHS07","Irritant/Harmful"],HLT:["GHS08","Health hazard (CMR/sens.)"],ENV:["GHS09","Aquatic hazard"]};
+const MATS={ // name:[rho kg/m3, mu Pa.s, state, [GHS], note]
+ "Demineralized / RO water":[1000,0.001,"Liquid",[],""],
+ "Caustic soda lye NaOH 50%":[1520,0.08,"Liquid",["COR"],"Strong exotherm on dilution — add to water, never reverse"],
+ "Sulphonic acid LABSA 96%":[1060,8,"Viscous",["COR","IRR"],"Neutralize slowly; exotherm with NaOH"],
+ "SLES 70% paste":[1050,10,"Paste",["IRR","ENV"],"Dilute with shear; gels at 30–60%"],
+ "SLES 27% solution":[1030,0.10,"Liquid",["IRR","ENV"],""],
+ "APG 50%":[1100,2,"Viscous",["IRR"],""],
+ "Betaine CAPB 30%":[1040,0.5,"Liquid",["IRR"],""],
+ "Glycerin 99.5%":[1260,1.4,"Viscous",[],""],
+ "Sodium chloride brine 25%":[1190,0.002,"Liquid",[],"Viscosity booster via salt effect"],
+ "Calcium chloride sol. 30%":[1290,0.004,"Liquid",["IRR"],""],
+ "EDTA solution 40%":[1290,0.05,"Liquid",["IRR"],""],
+ "NTA / replacement chelant":[1200,0.03,"Liquid",["IRR","HLT"],""],
+ "Non-ionic surfactant (AEO)":[1000,0.3,"Liquid",["IRR","ENV"],""],
+ "Sodium metasilicate powder":[1090,0.001,"Powder",["COR"],"Dust control; dissolve fully (850 kg direct per 17 t per your SOP)"],
+ "Hydrochloric acid 32%":[1160,0.002,"Liquid",["COR"],"Fuming; segregate from hypochlorite & metals"],
+ "Isopropanol (IPA)":[786,0.0024,"Liquid",["FLAM","IRR"],"Flash point 12 °C — ATEX zone review"],
+ "Hydrogen peroxide 35%":[1130,0.0012,"Liquid",["OX","COR"],"Keep from organics/metals; vented storage only"],
+ "HEDP 60%":[1450,0.03,"Liquid",["COR"],""],
+ "Citric acid 50%":[1240,0.008,"Liquid",["IRR"],""],
+ "Formic acid 85%":[1220,0.0018,"Liquid",["COR"],"Combustible; corrosive vapors"],
+ "Lactic acid 88%":[1200,0.04,"Liquid",["COR"],""],
+ "Perfume / fragrance oil":[950,0.01,"Liquid",["FLAM","IRR","HLT","ENV"],"Add below 30–35 °C per SOPs; sensitizer"],
+ "Colorant solution":[1050,0.05,"Liquid",["IRR"],"Pre-dissolve per SOP"],
+ "Preservative (isothiazolinone)":[1030,0.01,"Liquid",["TOX","HLT","ENV"],"Add after QC approval per SOPs; strong sensitizer"],
+ "Optical brightener disp.":[1100,0.05,"Dispersion",["IRR"],"Pre-dissolve in RO water (premix)"],
+ "Thickener Hy Suau AQ1300":[1050,1,"Dispersion",["IRR"],""],
+ "Cationic esterquat (Polyquart SD09)":[1000,0.5,"Liquid",["IRR","ENV"],"Do not mix with anionics (SLES/LABSA) — precipitation"],
+ "Mono propylene glycol":[1036,0.045,"Liquid",[],""],
+ "Formalin 37%":[1090,0.003,"Liquid",["TOX","COR","HLT"],"Carcinogen cat.1B — closed dosing, LEV required"],
+ "Potassium cocoate / Texal":[1050,0.5,"Liquid",["IRR"],""],
+ "Enzyme concentrate":[1100,0.05,"Liquid",["HLT"],"Respiratory sensitizer — no aerosols, add after QC"],
+ "Pearling agent (EGDS)":[1030,2,"Dispersion",["IRR"],"Shear-sensitive"],
+ "Sodium hydroxide pearls":[2130,0.001,"Solid",["COR"],"Dissolve in premix, strong exotherm"]};
+const RECIPES={
+ dwl:[["Demineralized / RO water",68],["Caustic soda lye NaOH 50%",1.5],["Sulphonic acid LABSA 96%",7],["SLES 27% solution",18],["APG 50%",1],["Sodium chloride brine 25%",3],["Colorant solution",0.2],["Perfume / fragrance oil",0.8],["Preservative (isothiazolinone)",0.5]],
+ gel:[["Demineralized / RO water",60],["EDTA solution 40%",0.5],["Caustic soda lye NaOH 50%",2],["Optical brightener disp.",0.3],["Non-ionic surfactant (AEO)",4],["Potassium cocoate / Texal",2],["Sulphonic acid LABSA 96%",9],["SLES 27% solution",18],["Sodium chloride brine 25%",2.5],["Colorant solution",0.2],["Perfume / fragrance oil",0.8],["Enzyme concentrate",0.3],["Preservative (isothiazolinone)",0.4]],
+ soft:[["Demineralized / RO water",92],["Cationic esterquat (Polyquart SD09)",5.5],["Colorant solution",0.15],["Perfume / fragrance oil",1.2],["Thickener Hy Suau AQ1300",0.6],["Citric acid 50%",0.15],["Preservative (isothiazolinone)",0.4]],
+ hwsg:[["Demineralized / RO water",70],["Pearling agent (EGDS)",1.5],["SLES 27% solution",20],["Betaine CAPB 30%",4],["APG 50%",1.5],["Glycerin 99.5%",1],["Sodium chloride brine 25%",1.2],["Colorant solution",0.1],["Perfume / fragrance oil",0.8],["Preservative (isothiazolinone)",0.4]],
+ apc:[["Demineralized / RO water",78],["Non-ionic surfactant (AEO)",3],["SLES 27% solution",12],["Betaine CAPB 30%",3],["Sodium chloride brine 25%",2],["Colorant solution",0.2],["Perfume / fragrance oil",1.2],["Preservative (isothiazolinone)",0.5]],
+ deg:[["Demineralized / RO water",74],["Sodium metasilicate powder",5],["EDTA solution 40%",2],["Caustic soda lye NaOH 50%",3],["Non-ionic surfactant (AEO)",6],["Mono propylene glycol",4],["Betaine CAPB 30%",3],["Formalin 37%",0.3],["Perfume / fragrance oil",0.7]],
+ glass:[["Demineralized / RO water",88],["Isopropanol (IPA)",8],["SLES 27% solution",2.5],["Colorant solution",0.1],["Perfume / fragrance oil",0.5],["Preservative (isothiazolinone)",0.3]],
+ stain:[["Demineralized / RO water",70],["Caustic soda lye NaOH 50%",1],["Optical brightener disp.",0.5],["Non-ionic surfactant (AEO)",4],["Sulphonic acid LABSA 96%",3],["Hydrogen peroxide 35%",18],["HEDP 60%",1.5],["Colorant solution",0.1],["Perfume / fragrance oil",0.6]],
+ tcacid:[["Demineralized / RO water",78],["Cationic esterquat (Polyquart SD09)",2],["Hydrochloric acid 32%",18],["Colorant solution",0.3]]};
+const IMPLIB=[ // name, lobes/angle, flow, Np, visc range, t400, t500, use
+ ["Propeller 3-blade / 45°","3 / 45°","Axial",0.35,"< 2 Pa·s","12.5 s","7.5 s","General blending, low μ"],
+ ["Propeller 3-blade / 20°","3 / 20°","Axial (weak)",0.30,"< 1 Pa·s","> 20 s","> 20 s","Gentle circulation only"],
+ ["Propeller 3-blade / 60°","3 / 60°","Axial/mixed",0.55,"< 2 Pa·s","14 s","10.5 s","Higher lift duty"],
+ ["Paddle 2-blade / 45°","2 / 45°","Mixed",0.8,"< 5 Pa·s","13.5 s","9.5 s","Simple duties, cheap"],
+ ["Paddle 2-blade / 60°","2 / 60°","Mixed",1.0,"< 5 Pa·s","12 s","11 s","Simple duties"],
+ ["Turbine 4-blade / 0° (flat)","4 / 0°","Radial",2.6,"< 10 Pa·s","10.4 s","6.8 s","Fastest blend in your chart test"],
+ ["Turbine 4-blade / 45° (PBT)","4 / 45°","Mixed",1.35,"< 10 Pa·s","13.5 s","7.5 s","Solids suspension, general duty"],
+ ["Rushton 5–6 blade disc","5–6 / 0°","Radial",5.0,"< 10 Pa·s","16.8 s","12 s","Gas dispersion, high shear"],
+ ["Pitched-blade turbine 5×45°","5 / 45°","Mixed",1.6,"< 10 Pa·s","14.5 s","11.5 s","Robust general purpose"],
+ ["Sawtooth (Cowles) 18T","18 teeth","Radial shear",0.65,"< 30 Pa·s","18.5 s","12.5 s","Dispersion/emulsification"],
+ ["Anchor 2-arm / 0°","2 / 0°","Tangential",30,"5–50 Pa·s","10 s*","7.5 s*","Wall sweep, heat transfer (*near-wall)"],
+ ["Helical ribbon","2 flights","Tangential+axial",30,"> 50 Pa·s","> 20 s (turb) / best (lam)","—","Laminar turnover champion"],
+ ["Reverse-pitch 2-blade ±45°","2 / ±45°","Counter-flow",1.2,"< 10 Pa·s","16 s","8.5 s","Foam knock-down, surface control"],
+ ["Double-angle curved blade (your crutcher)","2–4 / dual","Mixed wide-blade",1.6,"< 15 Pa·s","≈ PBT","≈ PBT","ARMA 25 m³ crutcher standard; good for gels + suspensions"]];
+const IVENDORS=[
+ ["Level (continuous)","80 GHz radar","VEGA VEGAPULS 64 · E+H Micropilot FMR6x · Siemens Sitrans LR250","4–20 mA HART · Profibus PA · Profinet"],
+ ["Level (point)","Vibrating fork","E+H Liquiphant FTL5x · VEGASWING 63","NAMUR / relay / IO-Link"],
+ ["Pressure","Flush diaphragm transmitter","E+H Cerabar PMP55 · WIKA IPT-2x · Yokogawa EJA","4–20 mA HART · Profinet"],
+ ["Temperature","Pt100 + head transmitter","E+H TM4x1 · WIKA TR10 · JUMO dTRANS","4–20 mA HART · IO-Link"],
+ ["Batching weight","Load cells under tank legs (3–4×)","Mettler-Toledo SWB505 · HBM/HBK FIT · Minebea Intec PR62","Analog to PLC weigh module · Profinet weighing terminal"],
+ ["Dosing flow","Electromagnetic flowmeter","E+H Promag P/H · Krohne Optiflux 4300 · Siemens MAG5100W","4–20 mA/pulse · HART · Profinet"],
+ ["pH (per SOP adjust steps)","Retractable pH assembly + Memosens","E+H CPS11E+CM44 · Mettler InPro/M400 · Hamilton Arc","4–20 mA HART · Memosens digital"],
+ ["CIP verification","Inline conductivity + temperature","Anderson-Negele ILM-4 · E+H Condumax CLS21E","4–20 mA · IO-Link"],
+ ["Agitator/motor","VFD with drive-integrated monitoring","Siemens G120 · ABB ACS580 · Danfoss FC302","Profinet / EtherNet-IP to PLC"]];
+const PVENDORS={
+ cenh:["Hygienic centrifugal (EHEDG/3-A, ISO 2037)","Alfa Laval LKH · Fristam FPX · GEA Hilge Hygia · Inoxpa Prolac HCP"],
+ cen:["Industrial end-suction (ISO 2858 / ISO 5199 / EN 733)","KSB Etanorm/MegaCPK · Grundfos NB/NK · Ebara 3D · Xylem e-SH"],
+ lobe:["Rotary lobe / circumferential piston (API 676 class)","Alfa Laval SRU & SX · Fristam FL/FKL · SPX Johnson TopLobe · Börger BLUEline"],
+ gear:["Internal gear","Viking Q/QS · Tuthill GlobalGear · Desmi Rotan"],
+ pc:["Progressive cavity (API 676)","Netzsch NEMO · Seepex BN · PCM EcoMoineau"]};
+const cP=v=>f(v*1000,v<0.01?1:0)+" cP";
+const dual={kw:v=>f(v,2)+" kW ("+f(v*1.341,1)+" hp)", m3h:v=>f(v,1)+" m³/h ("+f(v*4.403,0)+" gpm)",
+  m:v=>f(v,1)+" m ("+f(v*3.281,0)+" ft / "+f(v*0.0981,2)+" bar)", nm:v=>f(v,0)+" N·m ("+f(v*0.7376,0)+" lbf·ft)"};
+
+function loadPreset(){
+  const p=$('preset').value; if(!p)return;
+  const set=(id,v)=>$(id).value=v;
+  if(p==='cr1'||p==='cr3'){set('T',p==='cr1'?2.70:2.709);set('H',p==='cr1'?4.60:4.65);set('bottom','cone');set('mat','Stainless Steel 304');set('hyg','yes');}
+  if(p==='st28'){set('T',2.86);set('H',4.50);set('bottom','cone');set('mat','Stainless Steel 316L');set('goal','blend');}
+  calcAll(); show(0,document.querySelectorAll('nav button')[0]);
+}
+/* ---- recipe builder ---- */
+let rows=0;
+function addRow(mat,pct){
+  if(rows>=30){alert("30-material limit reached");return;}
+  rows++;
+  const tr=document.createElement('tr');tr.id='rr'+rows;
+  const opts=Object.keys(MATS).map(m=>`<option${m===mat?' selected':''}>${m}</option>`).join('');
+  tr.innerHTML=`<td>${rows}</td><td class="l"><select onchange="recalcRecipe()" class="rmat">${opts}</select></td>
+   <td><input type="number" class="rpct" value="${pct||0}" min="0" step="0.1" style="width:70px" oninput="recalcRecipe()"></td>
+   <td class="rrho2"></td><td class="rmu2"></td><td class="rst"></td><td class="l rgh"></td>
+   <td><button onclick="this.closest('tr').remove();recalcRecipe()" style="cursor:pointer">✕</button></td>`;
+  document.getElementById('rectab').appendChild(tr); recalcRecipe();
+}
+function loadRecipe(){
+  const r=RECIPES[$('recipePreset').value]; if(!r)return;
+  document.querySelectorAll('#rectab tr').forEach((tr,i)=>{if(i>0)tr.remove();}); rows=0;
+  r.forEach(([m,p])=>addRow(m,p));
+}
+function recalcRecipe(){
+  let sum=0,invRho=0,lnMu=0,haz=new Set(),names=[];
+  document.querySelectorAll('#rectab tr').forEach((tr,i)=>{
+    if(i===0)return;
+    const m=tr.querySelector('.rmat').value, w=+tr.querySelector('.rpct').value/100, d=MATS[m];
+    tr.querySelector('.rrho2').textContent=d[0]; tr.querySelector('.rmu2').textContent=f(d[1]*1000,d[1]<0.01?1:0);
+    tr.querySelector('.rst').textContent=d[2];
+    tr.querySelector('.rgh').innerHTML=d[3].map(h=>`<span class="badge" style="background:#FDEDE6;color:var(--warn);border-color:var(--warn)">${GHS[h][0]}</span>`).join('')||"—";
+    if(w>0){sum+=w; invRho+=w/d[0]; lnMu+=w*Math.log(d[1]); d[3].forEach(h=>haz.add(h)); names.push(m);}
+  });
+  $('rsum').textContent=f(sum*100,1)+" %";
+  $('rsum').style.color=Math.abs(sum-1)<0.005?'var(--accent)':'var(--warn)';
+  const rho=sum>0?sum/invRho:0, mu=sum>0?Math.exp(lnMu/sum):0;
+  $('rrho').textContent=sum?f(rho,0)+" kg/m³":"—";
+  $('rmu').textContent=sum?cP(mu):"—";
+  // hazard rollup + incompatibility rules
+  let warns=[];
+  const has=s=>names.some(n=>n.includes(s));
+  if((has("NaOH")||has("metasilicate"))&&(has("acid")||has("LABSA")||has("Hydrochloric"))) warns.push("Acid + caustic in one recipe: strong neutralization exotherm — dose acid slowly with full agitation and temperature monitoring (SOP max 35 °C).");
+  if(has("peroxide")) warns.push("H₂O₂ is an oxidizer: keep dosing line dedicated, vent the tank (O₂ evolution), no carbon steel or copper contact, PVRV recommended.");
+  if(has("Hydrochloric")) warns.push("HCl service: SS316L minimum is NOT sufficient long-term — use FRP/PP/PVDF-lined tank or high-alloy; fume scrubber on vent; never mix with hypochlorite.");
+  if(has("IPA")) warns.push("IPA is flammable (FP 12 °C): ATEX zoning, Ex-rated motor/instruments, earthing/bonding, nitrogen blanket advisable.");
+  if(has("Formalin")) warns.push("Formalin: CMR 1B — closed automatic dosing, local exhaust, no manual bucket charging.");
+  if(has("esterquat")&&(has("SLES")||has("LABSA"))) warns.push("Cationic + anionic surfactants precipitate — verify order/compatibility (your softener SOP keeps them separate).");
+  if(has("Enzyme")) warns.push("Enzymes: respiratory sensitizer — avoid aerosol formation; add after QC per SOP.");
+  $('hazroll').innerHTML="<h3>GHS hazard roll-up for the batch</h3>"+
+    ([...haz].map(h=>`<span class="badge" style="background:#FDEDE6;color:var(--warn);border-color:var(--warn)">${GHS[h][0]} ${GHS[h][1]}</span>`).join('')||"No classified hazards")+
+    warns.map(w=>`<div class="note safe">${w}</div>`).join('');
+  window._recipe={rho,mu,haz:[...haz],names,warns,sum};
+  renderSeq();
+}
+function renderSeq(){
+  const r=window._recipe; if(!r||!r.names.length){$('seqres').innerHTML="Add materials to see the sequence.";return;}
+  let html="<table><tr><th>Step</th><th>Action</th><th>Interlock / check</th></tr>";
+  let i=1;
+  document.querySelectorAll('#rectab tr').forEach((tr,k)=>{
+    if(k===0)return; const m=tr.querySelector('.rmat').value, w=tr.querySelector('.rpct').value, d=MATS[m];
+    if(+w<=0)return;
+    let chk="Mix until complete dissolving (per SOP)";
+    if(m.includes("Perfume"))chk="Wait T < 35 °C before addition (TT-05 interlock)";
+    if(m.includes("Preservative")||m.includes("Enzyme"))chk="Hold for QC approval before addition";
+    if(m.includes("NaOH")||m.includes("acid")||m.includes("Hydrochloric"))chk="Slow dosing ramp, monitor T ≤ 35 °C + pH";
+    html+=`<tr><td>${i++}</td><td class="l">Add <b>${m}</b> — ${w} wt% ${d[4]?("<br><span style='font-size:11px;color:var(--warn)'>"+d[4]+"</span>"):""}</td><td class="l">${chk}</td></tr>`;
+  });
+  html+=`<tr><td>${i++}</td><td class="l">Adjust pH per product spec, sample to lab</td><td class="l">pH transmitter AT-08 reading to SCADA batch record</td></tr>`;
+  html+=`<tr><td>${i}</td><td class="l">Dispatch to storage tank</td><td class="l">Dispatch pump interlock: LSL + QC release flag</td></tr></table>`;
+  $('seqres').innerHTML=html;
+}
+function applyRecipe(){
+  const r=window._recipe;
+  if(!r||Math.abs(r.sum-1)>0.02){alert("Recipe wt% should total ≈100% before applying.");return;}
+  $('rho').value=Math.round(r.rho);
+  const ov=+$('muOverride').value;
+  $('mu').value=ov?ov:+(r.mu*1000).toFixed(1);
+  if(ov&&ov>1000)$('rheo').value='shear';
+  window._foaming = r.names.some(n=>n.includes("SLES")||n.includes("Betaine")||n.includes("LABSA")||n.includes("cocoate"));
+  if(r.haz.includes("COR")&&$('mat').value.includes("304"))$('mat').value="Stainless Steel 316L";
+  calcAll();
+}
+/* ---- material DB table ---- */
+function renderMatDB(){
+  $('matdb').innerHTML="<table><tr><th>Material</th><th>ρ kg/m³</th><th>μ cP</th><th>State</th><th>GHS</th><th>Handling note</th></tr>"+
+   Object.entries(MATS).map(([m,d])=>`<tr><td class="l">${m}</td><td>${d[0]}</td><td>${f(d[1]*1000,d[1]<0.01?1:0)}</td><td>${d[2]}</td><td class="l">${d[3].map(h=>GHS[h][0]).join(", ")||"—"}</td><td class="l">${d[4]||"—"}</td></tr>`).join('')+"</table>";
+}
+/* ---- impeller library + justification ---- */
+function renderLib(){
+  $('implib').innerHTML="<table><tr><th>Impeller</th><th>Blades/angle</th><th>Flow class</th><th>Np</th><th>Viscosity range</th><th>Blend t @400 rpm</th><th>@500 rpm</th><th>Typical use</th></tr>"+
+   IMPLIB.map(r=>`<tr><td class="l">${r[0]}</td><td>${r[1]}</td><td class="l">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td><td class="l">${r[7]}</td></tr>`).join('')+"</table>";
+  if(!R.key)return;
+  // scoring: candidates vs current duty
+  const cands=[["hydrofoil","Hydrofoil"],["pbt","PBT 4×45°"],["rushton","Rushton disc"],["sawtooth","Sawtooth"],["anchor","Anchor"],["ribbon","Helical ribbon"]];
+  const scores=cands.map(([k,label])=>{
+    const im=IMPELLERS[k];
+    let vScore = (k==='anchor')?(R.mu>=5&&R.mu<=50?5:R.mu>1?3:1):(k==='ribbon')?(R.mu>50?5:R.mu>5?3:1):(R.mu<2?5:R.mu<5?3:1);
+    let fScore = 3;
+    if(R.goal==='blend') fScore={hydrofoil:5,pbt:4,rushton:2,sawtooth:1,anchor:2,ribbon:2}[k];
+    if(R.goal==='susp_l'||R.goal==='susp_h') fScore={hydrofoil:3,pbt:5,rushton:R.goal==='susp_h'?5:3,sawtooth:1,anchor:1,ribbon:1}[k];
+    if(R.goal==='disp') fScore={hydrofoil:1,pbt:2,rushton:4,sawtooth:5,anchor:1,ribbon:1}[k];
+    if(R.goal==='hx') fScore={hydrofoil:3,pbt:4,rushton:2,sawtooth:1,anchor:5,ribbon:4}[k];
+    if(R.goal==='visc') fScore={hydrofoil:1,pbt:1,rushton:1,sawtooth:2,anchor:4,ribbon:5}[k];
+    const pScore = im.Np?(im.Np<=0.5?5:im.Np<=1.5?4:im.Np<=3?3:2):(R.mu>5?4:1);
+    const tScore = {hydrofoil:4,pbt:4,rushton:3,sawtooth:2,anchor:R.mu>5?4:2,ribbon:R.mu>50?5:2}[k];
+    return {k,label,vScore,fScore,pScore,tScore,total:vScore*0.3+fScore*0.35+pScore*0.2+tScore*0.15};
+  }).sort((a,b)=>b.total-a.total);
+  $('justres').innerHTML=`<table><tr><th>Candidate</th><th>Viscosity fit (30%)</th><th>Process-goal fit (35%)</th><th>Power efficiency (20%)</th><th>Blend time (15%)</th><th>Score /5</th></tr>`+
+   scores.map(s=>`<tr${s.k===R.key?' style="outline:2px solid var(--accent)"':''}><td class="l">${s.label}${s.k===R.key?' ✓ SELECTED':''}</td><td>${s.vScore}</td><td>${s.fScore}</td><td>${s.pScore}</td><td>${s.tScore}</td><td><b>${f(s.total,2)}</b></td></tr>`).join('')+
+   `</table><div class="ref">Weighted scoring for the current duty: μ = ${cP(R.mu)}, goal = ${$('goal').selectedOptions[0].text}, V = ${f(R.V,1)} m³. The selected impeller is the top-ranked feasible candidate; ties break toward lower Np (energy cost).</div>`;
+  // bar chart
+  const bw=56, W=64+scores.length*(bw+18);
+  const grid=[0,1,2,3,4,5].map(g=>`<line x1="42" y1="${215-g/5*180}" x2="${W-12}" y2="${215-g/5*180}" stroke="${g?'#E8EEF3':'var(--line)'}" stroke-width="${g?1:1.5}"/><text x="34" y="${219-g/5*180}" font-size="9.5" text-anchor="end" fill="var(--ink2)">${g}</text>`).join('');
+  $('justchart').innerHTML=`<svg viewBox="0 0 ${W} 268" width="100%">${DEFS}${grid}`+
+   scores.map((s,i)=>{const h=s.total/5*180, x=52+i*(bw+18);
+    return `<rect x="${x}" y="${215-h}" width="${bw}" height="${h}" fill="${s.k===R.key?'var(--accent)':'#9FB8CC'}" rx="4" filter="url(#ds)"/>
+     <rect x="${x+4}" y="${215-h+4}" width="10" height="${Math.max(h-8,0)}" fill="#FFFFFF" opacity="0.18" rx="4"/>
+     <text x="${x+bw/2}" y="${206-h}" text-anchor="middle" font-size="12.5" font-weight="bold" fill="var(--ink)">${f(s.total,2)}</text>
+     <text x="${x+bw/2}" y="232" text-anchor="middle" font-size="9.5" fill="var(--ink2)">${s.label.split(' ')[0]}</text>
+     ${s.k===R.key?`<text x="${x+bw/2}" y="246" text-anchor="middle" font-size="9" fill="var(--accent)">SELECTED ✓</text>`:''}`;}).join('')+
+   `<text x="42" y="18" font-size="11.5" font-weight="bold" fill="var(--ink)">Suitability score /5 — current duty</text></svg>`;
+}
+/* ---- pumps ---- */
+function calcPump(){
+  const svc=$('psvc').value;
+  let Q=+$('pQ').value, Hd=+$('pH').value;
+  const mu=R.mu||0.05, rho=R.rho||1050, hyg=R.hyg, shear=$('pshear').value==='yes'||window._foaming&&svc==='dispatch'&&mu>2;
+  if(svc==='cip'&&R.Qcip){Q=R.Qcip*0.06;$('pQ').value=f(Q,1);}
+  let type,eff,vendKey,speed,std;
+  if(mu<0.1&&!shear){type=hyg?"Hygienic end-suction centrifugal":"End-suction centrifugal";eff=0.62;vendKey=hyg?'cenh':'cen';speed="2900 or 1450 rpm";std=hyg?"ISO 2037 / EHEDG":"ISO 2858 / ISO 5199";}
+  else if(mu<1&&!shear){type="Centrifugal with HI viscosity correction (verify) or rotary lobe";eff=0.5;vendKey=hyg?'cenh':'cen';speed="1450 rpm";std="ISO 5199 + HI 9.6.7 viscosity correction";}
+  else if(mu<100){type="Rotary lobe (positive displacement)";eff=0.68;vendKey='lobe';speed="200–450 rpm";std="API 676 class / EHEDG";}
+  else {type="Progressive cavity";eff=0.6;vendKey='pc';speed="100–300 rpm";std="API 676";}
+  if(shear&&mu<100){type="Rotary lobe — LOW SHEAR duty (pearlizer/gel protection)";eff=0.68;vendKey='lobe';speed="≤ 300 rpm";std="API 676 class / EHEDG";}
+  const Ph=rho*9.81*(Q/3600)*Hd/1000; // kW
+  const Pshaft=Ph/eff, Pm=MOTOR_KW.find(k=>k>=Pshaft*1.2)||250;
+  const DNs=nextDN(Math.sqrt(4*(Q/3600)/(Math.PI*1.5))*1000), DNd=nextDN(Math.sqrt(4*(Q/3600)/(Math.PI*2.5))*1000);
+  $('prules').innerHTML=`<table><tr><th>Viscosity</th><th>Pump family</th><th>Standard</th></tr>
+   <tr><td>&lt; 100 cP</td><td class="l">End-suction centrifugal</td><td class="l">ISO 2858 / ISO 5199 · hygienic: ISO 2037, EHEDG</td></tr>
+   <tr><td>100 – 1,000 cP</td><td class="l">Centrifugal (derated per HI 9.6.7) or lobe</td><td class="l">HI viscosity correction</td></tr>
+   <tr><td>1,000 – 100,000 cP</td><td class="l">Rotary lobe / circumferential piston / internal gear</td><td class="l">API 676 class</td></tr>
+   <tr><td>&gt; 100,000 cP or high solids</td><td class="l">Progressive cavity</td><td class="l">API 676</td></tr>
+   <tr><td>Shear-sensitive</td><td class="l">Lobe or PC at low speed, oversized ports</td><td class="l">—</td></tr></table>`;
+  $('pds').innerHTML=`<table><tr><th>Parameter</th><th>Value</th></tr>
+   <tr><td class="l">Service</td><td class="l">${$('psvc').selectedOptions[0].text}</td></tr>
+   <tr><td class="l">Selected pump type</td><td class="l"><b>${type}</b> — ${std}</td></tr>
+   <tr><td class="l">Capacity</td><td>${dual.m3h(Q)}</td></tr>
+   <tr><td class="l">Total head</td><td>${dual.m(Hd)}</td></tr>
+   <tr><td class="l">Fluid</td><td>ρ ${f(rho,0)} kg/m³ · μ ${cP(mu)} @ 25 °C</td></tr>
+   <tr><td class="l">Hydraulic / shaft power</td><td>${dual.kw(Ph)} / ${dual.kw(Pshaft)}</td></tr>
+   <tr><td class="l">Motor</td><td>${dual.kw(Pm)} — IEC ${IEC_FRAME[Pm]||'—'}, IE3, IP55${R.press!=='atm'?', Ex db':''} + VFD</td></tr>
+   <tr><td class="l">Speed</td><td>${speed}</td></tr>
+   <tr><td class="l">Connections</td><td>Suction DN${DNs} / Discharge DN${DNd} ${hyg?'Tri-Clamp':'PN16 flanged'}</td></tr>
+   <tr><td class="l">Materials / seal</td><td class="l">Wetted SS316L; single mechanical seal SiC/SiC, ${(window._recipe&&window._recipe.haz&&window._recipe.haz.includes('OX'))?'FKM':'EPDM'} elastomers${hyg?' (FDA/EC1935)':''}; flush drain casing</td></tr>
+   <tr><td class="l">NPSH check</td><td class="l">Cone-bottom outlet gives flooded suction ≈ ${f((R.Z||2)*0.8,1)} m static — verify NPSHa ≥ NPSHr + 0.5 m at end of drain</td></tr>
+   <tr><td class="l">Protection</td><td class="l">Dry-run: LSL interlock + power monitor; PD pumps: relief valve or ΔP switch on discharge (mandatory)</td></tr></table>`;
+  $('pvend').innerHTML="<table><tr><th>Family</th><th>Recommended vendors / series</th></tr>"+
+   Object.values(PVENDORS).map(v=>`<tr${PVENDORS[vendKey]===v?' style="outline:2px solid var(--accent)"':''}><td class="l">${v[0]}</td><td class="l">${v[1]}</td></tr>`).join('')+"</table>";
+  $('ivend').innerHTML="<table><tr><th>Measurement</th><th>Technology</th><th>Suppliers</th><th>PLC/SCADA signal</th></tr>"+
+   IVENDORS.map(r=>`<tr><td class="l">${r[0]}</td><td class="l">${r[1]}</td><td class="l">${r[2]}</td><td class="l">${r[3]}</td></tr>`).join('')+"</table>";
+  drawPumpCharts(vendKey,Q,Hd,eff,mu);
+}
+function drawPumpCharts(fam,Q,Hd,eff,mu){
+  const W=430,Hc=300,mL=52,mB=42,pw=W-mL-16,ph=Hc-mB-30;
+  const isCen = fam==='cen'||fam==='cenh';
+  let s1='';
+  if(isCen){
+    const Qb=Q, Qmax=1.6*Qb, Hshut=1.28*Hd, k=(Hshut-Hd)/(Qb*Qb);
+    const X=q=>mL+q/Qmax*pw, YH=h=>30+ (1-h/(Hshut*1.05))*ph, YE=e=>30+(1-e)*ph;
+    let hPath='M',ePath='M';
+    for(let i=0;i<=40;i++){const q=Qmax*i/40, h=Math.max(Hshut-k*q*q,0), e=Math.max(eff*1.05*(2*(q/Qb)-(q/Qb)**2),0);
+      hPath+=`${X(q).toFixed(1)},${YH(h).toFixed(1)} `; ePath+=`${X(q).toFixed(1)},${YE(Math.min(e,1)).toFixed(1)} `;}
+    s1=`<path d="${hPath}" fill="none" stroke="var(--draw)" stroke-width="2.5"/>
+     <path d="${ePath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 4"/>
+     <circle cx="${X(Qb)}" cy="${YH(Hd)}" r="6" fill="var(--warn)"/>
+     <text x="${X(Qb)+9}" y="${YH(Hd)-8}" font-size="11" fill="var(--warn)">DUTY ${f(Q,0)} m³/h @ ${f(Hd,0)} m</text>
+     <line x1="${X(0.8*Qb)}" y1="30" x2="${X(0.8*Qb)}" y2="${30+ph}" stroke="#B9CBD9" stroke-dasharray="4 4"/>
+     <line x1="${X(1.1*Qb)}" y1="30" x2="${X(1.1*Qb)}" y2="${30+ph}" stroke="#B9CBD9" stroke-dasharray="4 4"/>
+     <text x="${X(0.82*Qb)}" y="44" font-size="9" fill="#7C93A6">POR 80–110% BEP</text>
+     <text x="${mL+6}" y="${YH(Hshut)+12}" font-size="10" fill="var(--draw)">H–Q curve</text>
+     <text x="${X(Qb)-30}" y="${YE(eff)-10}" font-size="10" fill="var(--accent)">η curve (BEP ${f(eff*100,0)}%)</text>`;
+  }else{
+    const dpMax=1.5*Hd;
+    const X=dp=>mL+dp/dpMax*pw, Y=q=>30+(1-q/(1.3*Q))*ph;
+    const speeds=[[1.0,"100% speed"],[0.75,"75%"],[0.5,"50%"]];
+    s1=speeds.map(([r,lab],i)=>{
+      let p='M';
+      for(let j=0;j<=20;j++){const dp=dpMax*j/20, slip=0.06*(dp/dpMax)*(50/Math.max(mu*1000,50)); // slip shrinks with viscosity
+        const q=Math.max(Q*r*(1-slip),0); p+=`${X(dp).toFixed(1)},${Y(q).toFixed(1)} `;}
+      return `<path d="${p}" fill="none" stroke="var(--draw)" stroke-width="2"/><text x="${W-84}" y="${Y(Q*r)-5}" font-size="10" fill="var(--draw)">${lab}</text>`;
+    }).join('')+
+    `<circle cx="${X(Hd)}" cy="${Y(Q)}" r="6" fill="var(--warn)"/>
+     <text x="${X(Hd)-70}" y="${Y(Q)-10}" font-size="11" fill="var(--warn)">DUTY ${f(Q,0)} m³/h @ ${f(Hd,0)} m</text>
+     <text x="${mL+6}" y="42" font-size="10" fill="var(--ink2)">PD characteristic: flow ∝ speed, nearly independent of pressure (slip falls as viscosity rises)</text>`;
+  }
+  let ticks='';
+  if(isCen){const Qmax=1.6*Q,Hshut=1.28*Hd;
+    for(let i=0;i<=4;i++){const q=Qmax*i/4,x=mL+i/4*pw;ticks+=`<line x1="${x}" y1="${30+ph}" x2="${x}" y2="${34+ph}" stroke="var(--ink2)"/><text x="${x}" y="${46+ph}" font-size="9" text-anchor="middle" fill="var(--ink2)">${f(q,0)}</text><line x1="${x}" y1="30" x2="${x}" y2="${30+ph}" stroke="#EFF4F8"/>`;}
+    for(let i=0;i<=4;i++){const hv=Hshut*1.05*i/4,y=30+ph-i/4*ph;ticks+=`<line x1="${mL-4}" y1="${y}" x2="${mL}" y2="${y}" stroke="var(--ink2)"/><text x="${mL-7}" y="${y+3}" font-size="9" text-anchor="end" fill="var(--ink2)">${f(hv,0)}</text><line x1="${mL}" y1="${y}" x2="${mL+pw}" y2="${y}" stroke="#EFF4F8"/>`;}
+    ticks+=`<text x="${mL+pw-4}" y="${58+ph-14}" font-size="9" text-anchor="end" fill="var(--ink2)">m³/h</text><text x="${mL+4}" y="40" font-size="9" fill="var(--ink2)">m</text>`;
+  }else{const dpMax=1.5*Hd;
+    for(let i=0;i<=4;i++){const dp=dpMax*i/4,x=mL+i/4*pw;ticks+=`<line x1="${x}" y1="${30+ph}" x2="${x}" y2="${34+ph}" stroke="var(--ink2)"/><text x="${x}" y="${46+ph}" font-size="9" text-anchor="middle" fill="var(--ink2)">${f(dp,0)}</text><line x1="${x}" y1="30" x2="${x}" y2="${30+ph}" stroke="#EFF4F8"/>`;}
+    for(let i=0;i<=4;i++){const qv=1.3*Q*i/4,y=30+ph-i/4*ph;ticks+=`<line x1="${mL-4}" y1="${y}" x2="${mL}" y2="${y}" stroke="var(--ink2)"/><text x="${mL-7}" y="${y+3}" font-size="9" text-anchor="end" fill="var(--ink2)">${f(qv,0)}</text><line x1="${mL}" y1="${y}" x2="${mL+pw}" y2="${y}" stroke="#EFF4F8"/>`;}
+    ticks+=`<text x="${mL+pw-4}" y="${58+ph-14}" font-size="9" text-anchor="end" fill="var(--ink2)">m head</text><text x="${mL+4}" y="40" font-size="9" fill="var(--ink2)">m³/h</text>`;
+  }
+  $('pcurve').innerHTML=`<svg viewBox="0 0 ${W} ${Hc}" width="100%">${DEFS}
+   <rect x="${mL}" y="30" width="${pw}" height="${ph}" fill="#FBFDFE" stroke="var(--line)"/>${ticks}${s1}
+   <text x="${mL+pw/2-30}" y="${Hc-8}" font-size="11" fill="var(--ink2)">${isCen?'Flow Q →':'Differential pressure →'}</text>
+   <text x="14" y="${30+ph/2}" font-size="11" fill="var(--ink2)" transform="rotate(-90 14 ${30+ph/2})">${isCen?'Head / Efficiency':'Flow Q'}</text>
+   <text x="${mL}" y="18" font-size="12" fill="var(--ink)">Performance map — ${isCen?'centrifugal':'positive displacement'}</text></svg>`;
+  // efficiency vs viscosity chart (log x, 1..1e5 cP)
+  const X2=v=>mL+ (Math.log10(v)/5)*pw, Y2=e=>30+(1-e/0.8)*ph;
+  const cenE=v=> v<100?0.65: v<500?0.65-(v-100)/400*0.15 : v<5000?0.5*Math.max(1-(v-500)/4500,0.06):0.03;
+  const lobeE=v=> v<50?0.55 : v<5000?0.55+Math.log10(v/50)*0.06 : Math.max(0.67-Math.log10(v/5000)*0.05,0.5);
+  const pcE=v=> v<100?0.5 : Math.min(0.5+Math.log10(v/100)*0.045,0.62);
+  const mk=(fn,color,lab,ly)=>{let p='M';for(let i=0;i<=50;i++){const v=Math.pow(10,i/10);p+=`${X2(v).toFixed(1)},${Y2(fn(v)).toFixed(1)} `;}
+    return `<path d="${p}" fill="none" stroke="${color}" stroke-width="2.5"/><text x="${W-118}" y="${ly}" font-size="10" fill="${color}">${lab}</text>`;};
+  const vNow=Math.max(mu*1000,1);
+  $('pvisc').innerHTML=`<svg viewBox="0 0 ${W} ${Hc}" width="100%">
+   <rect x="${mL}" y="30" width="${pw}" height="${ph}" fill="#FBFDFE" stroke="var(--line)"/>
+   ${[0,0.2,0.4,0.6,0.8].map(e=>`<line x1="${mL}" y1="${Y2(e)}" x2="${mL+pw}" y2="${Y2(e)}" stroke="#EFF4F8"/><text x="${mL-6}" y="${Y2(e)+3}" font-size="9" text-anchor="end" fill="var(--ink2)">${f(e*100,0)}%</text>`).join('')}
+   ${[1,10,100,1000,10000,100000].map(v=>`<line x1="${X2(v)}" y1="30" x2="${X2(v)}" y2="${30+ph}" stroke="#EDF2F6"/><text x="${X2(v)-10}" y="${Hc-24}" font-size="9" fill="#7C93A6">${v>=1000?v/1000+'k':v}</text>`).join('')}
+   ${mk(cenE,'#0E86D4','Centrifugal (HI derated)',52)}
+   ${mk(lobeE,'#0B6E4F','Rotary lobe',66)}
+   ${mk(pcE,'#8A2D0B','Progressive cavity',80)}
+   <line x1="${X2(vNow)}" y1="30" x2="${X2(vNow)}" y2="${30+ph}" stroke="var(--warn)" stroke-width="2" stroke-dasharray="6 4"/>
+   <text x="${Math.min(X2(vNow)+6,W-120)}" y="${30+ph-8}" font-size="11" fill="var(--warn)">Your product: ${f(vNow,0)} cP</text>
+   <text x="${mL+pw/2-40}" y="${Hc-8}" font-size="11" fill="var(--ink2)">Viscosity, cP (log)</text>
+   <text x="14" y="${30+ph/2}" font-size="11" fill="var(--ink2)" transform="rotate(-90 14 ${30+ph/2})">Attainable efficiency</text>
+   <text x="${mL}" y="18" font-size="12" fill="var(--ink)">Pump family efficiency vs viscosity</text></svg>`;
+}
+/* boot with defaults — fault-tolerant */
+function boot(){
+  try{ calcAll(); show(0,document.querySelectorAll('nav button')[0]); }
+  catch(e){
+    const d=document.createElement('div');
+    d.style.cssText="background:#FDEDE6;border:2px solid #C6410F;color:#7A2A0A;padding:14px;margin:14px;border-radius:8px;font-size:14px";
+    d.textContent="A calculation error occurred: "+e.message+" — check the input values and press Run full design again.";
+    document.querySelector('main').prepend(d);
+    console.error(e);
+  }
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}else{boot();}
+
+</script>
+<script>
+/* Debug build: remove any previously installed service worker + caches from this device */
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}
+if(window.caches){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k))).catch(()=>{});}
+</script>
+</body>
+</html>
